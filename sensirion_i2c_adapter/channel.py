@@ -16,11 +16,12 @@ class TxRxChannel(abc.ABC):
 
 class TxRxRequest:
 
-    def __init__(self, channel, tx_data=None, response=None, device_busy_delay=0.0):
+    def __init__(self, channel, tx_data=None, response=None, device_busy_delay=0.0, receive_length=0):
         self._channel: TxRxChannel = channel
         self._response = response
         self._tx_data = tx_data
-        self._device_busy_delay = device_busy_delay
+        self._device_busy_delay: float = device_busy_delay
+        self._rx_length: int = receive_length
 
     @property
     def read_delay(self):
@@ -32,7 +33,7 @@ class TxRxRequest:
 
     @property
     def rx_length(self):
-        return 0 if self._response is None else self._response.rx_length
+        return self._rx_length
 
     @property
     def timeout(self):

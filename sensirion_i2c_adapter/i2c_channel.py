@@ -15,7 +15,11 @@ class I2cChannel(TxRxChannel):
 
     def write_read(self, tx_data, payload_offset, response, device_busy_delay=0.0, slave_address=None):
         tx_data = I2cChannel._build_tx_data(tx_data, payload_offset, self._crc)
-        tx_rx = TxRxRequest(channel=self, response=response, tx_data=tx_data, device_busy_delay=device_busy_delay)
+        rx_len = 0
+        if response:
+            rx_len = 3 * response.rx_length // 2
+        tx_rx = TxRxRequest(channel=self, response=response, tx_data=tx_data, device_busy_delay=device_busy_delay,
+                            receive_length=rx_len)
         if slave_address is None:
             slave_address = self._slave_address
         return self._connection.execute(slave_address, tx_rx)

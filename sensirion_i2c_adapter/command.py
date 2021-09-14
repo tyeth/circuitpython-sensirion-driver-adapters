@@ -42,8 +42,7 @@ class Response:
         self._descriptor = descriptor
         self._rx_length = 0
         if self._descriptor is not None:
-            payload_size = struct.calcsize(self._descriptor)
-            self._rx_length = payload_size + payload_size // 2 # overhead from crc protocol
+            self._rx_length = struct.calcsize(self._descriptor)
 
     @property
     def rx_length(self):
