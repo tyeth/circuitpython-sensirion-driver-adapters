@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # (c) Copyright 2019 Sensirion AG, Switzerland
 import abc
-from typing import List
 import struct
+from typing import List
+
 from .channel import TxRxChannel
 
 
@@ -19,7 +20,7 @@ class Request:
         self._device_busy_delay = device_busy_delay
 
     def pack(self, argument_list, offset):
-        data_to_pack = tuple([self._cmd_id] + argument_list[offset: offset+self._num_params])
+        data_to_pack = tuple([self._cmd_id] + argument_list[offset: offset + self._num_params])
         offset += self._num_params
         return offset, bytearray(struct.pack(self._descriptor, *data_to_pack))
 
@@ -38,7 +39,7 @@ class Request:
 
 class Response:
 
-    def __init__(self, descriptor):
+    def __init__(self, descriptor=None):
         self._descriptor = descriptor
         self._rx_length = 0
         if self._descriptor is not None:
@@ -55,24 +56,21 @@ class Response:
 
 class Command(abc.ABC):
 
-    def __init__(self, channel):
-        self._channel: TxRxChannel = channel
-
-    def __call__(self, *args, **kwargs):
+    def __call__(self, channel: TxRxChannel, *args, **kwargs):
         argument_offset = 0
-        argument_list = list(*args)
+        argument_list = list(args)
         for request in self.req[:-1]:
             argument_offset, data = request.pack(argument_list, argument_offset)
-            self._channel.write_read(data, request.command_width,
-                                     None, device_busy_delay=request.device_busy_delay,
-                                     slave_address=request.slave_address)
+            channel.write_read(data, request.command_width,
+                               None, device_busy_delay=request.device_busy_delay,
+                               slave_address=request.slave_address)
         response = None
         request = self.req[-1]
         response = self.resp[-1] if len(self.resp) > 0 else None
         argument_offset, data = request.pack(argument_list, argument_offset)
-        return self._channel.write_read(data, request.command_width,
-                                        response, device_busy_delay=request.device_busy_delay,
-                                        slave_address=request.slave_address)
+        return channel.write_read(data, request.command_width,
+                                  response, device_busy_delay=request.device_busy_delay,
+                                  slave_address=request.slave_address)
 
     @property
     def req(self) -> List[Request]:
@@ -85,4 +83,3 @@ class Command(abc.ABC):
         if not hasattr(self.__class__, 'responses'):
             return []
         return getattr(self.__class__, 'responses')
-

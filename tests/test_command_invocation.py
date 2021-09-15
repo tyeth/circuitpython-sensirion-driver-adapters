@@ -39,14 +39,16 @@ def test_command_invocation():
         i2c_transceiver = SensorBridgeI2cProxy(bridge, port=SensorBridgePort.ONE)
         channel = I2cChannel(I2cConnection(i2c_transceiver), slave_address=0x69, crc=CrcCalculator(8, 0x31, 0xFF, 0x00))
 
-        StartMeasurement(channel)()
+        start_measurement = StartMeasurement()
+        read_result = ReadResults()
+        stop_measurement = StopMeasurements()
+        start_measurement(channel)
 
         for i in range(100):
-            res = ReadResults(channel)()
+            res = read_result(channel)
             print(res)
 
-        StopMeasurements(channel)()
-
+        stop_measurement(channel)
 
 
 test_command_invocation()

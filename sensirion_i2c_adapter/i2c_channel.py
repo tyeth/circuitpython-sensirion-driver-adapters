@@ -8,7 +8,7 @@ from .channel import TxRxChannel, TxRxRequest
 
 class I2cChannel(TxRxChannel):
 
-    def __init__(self, connection: I2cConnection, slave_address, crc):
+    def __init__(self, connection: I2cConnection, slave_address=0, crc=None):
         self._connection = connection
         self._slave_address = slave_address
         self._crc = crc
