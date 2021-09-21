@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# (c) Copyright 2019 Sensirion AG, Switzerland
+# (c) Copyright 2021 Sensirion AG, Switzerland
 
 from __future__ import absolute_import, division, print_function
 from setuptools import setup, find_packages
@@ -8,7 +8,7 @@ import re
 
 
 # Read version number from version.py
-version_line = open("sensirion_i2c_driver/version.py", "rt").read()
+version_line = open("sensirion_i2c_adapter/version.py", "rt").read()
 result = re.search(r"^version = ['\"]([^'\"]*)['\"]", version_line, re.M)
 if result:
     version_string = result.group(1)
@@ -24,7 +24,7 @@ long_description = readme.strip() + "\n\n" + changelog.strip() + "\n"
 
 
 setup(
-    name='sensirion_i2c_adapters',
+    name='sensirion_i2c_adapter',
     version=version_string,
     author='Rolf Laich',
     author_email='rolf.laich@sensirion.com',
@@ -34,7 +34,7 @@ setup(
     url='https://gitlab.sensirion.lokal/MSO-SW/drivers/python-driver-adapters',
     packages=find_packages(exclude=['tests', 'tests.*']),
     long_description=long_description,
-    python_requires='=3.8.*, <4',
+    python_requires='>=3.8',
     install_requires=[
     ],
     extras_require={

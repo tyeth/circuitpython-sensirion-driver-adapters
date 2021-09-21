@@ -1,13 +1,19 @@
 include: https://gitlab/Sensirion/Python/ci-config-python/raw/master/gitlab-ci-template-v2.yml
 
 check_rst_syntax:
-  extends: .check_rst_syntax_v1
+  extends: .check_rst_syntax_v2
   script:
     - rst-lint *.rst
 
 py3p8_64bit_win_build:
   extends: .py3p8_64bit_win_docker_build_v2
 
+py3p8_linux_sdist_v2:
+  stage: build
+  tags: [linux, docker]
+  image: registry.gitlab.sensirion.lokal/sensirion/docker/docker-python:3.8-20.04-2.6.0
+  script:
+    - python setup.py sdist
 
 build_docs:
   extends: .build_docs_v2

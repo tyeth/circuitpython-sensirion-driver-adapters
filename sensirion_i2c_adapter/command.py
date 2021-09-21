@@ -59,18 +59,29 @@ class Command(abc.ABC):
     def __call__(self, channel: TxRxChannel, *args, **kwargs):
         argument_offset = 0
         argument_list = list(args)
-        for request in self.req[:-1]:
+        data = None
+        slave_address = None
+        command_width = 0
+        device_busy_delay = 0
+        if len(self.req) > 0:
+            for request in self.req[:-1]:
+                argument_offset, data = request.pack(argument_list, argument_offset)
+                channel.write_read(data, request.command_width,
+                                   None, device_busy_delay=request.device_busy_delay,
+                                   slave_address=request.slave_address)
+
+            request = self.req[-1]
+            command_width = request.command_width
+            device_busy_delay = request.device_busy_delay
             argument_offset, data = request.pack(argument_list, argument_offset)
-            channel.write_read(data, request.command_width,
-                               None, device_busy_delay=request.device_busy_delay,
-                               slave_address=request.slave_address)
+            slave_address = request.slave_address
+
         response = None
-        request = self.req[-1]
         response = self.resp[-1] if len(self.resp) > 0 else None
-        argument_offset, data = request.pack(argument_list, argument_offset)
-        return channel.write_read(data, request.command_width,
-                                  response, device_busy_delay=request.device_busy_delay,
-                                  slave_address=request.slave_address)
+
+        return channel.write_read(data, command_width,
+                                  response, device_busy_delay=device_busy_delay,
+                                  slave_address=slave_address)
 
     @property
     def req(self) -> List[Request]:
