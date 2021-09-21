@@ -25,7 +25,7 @@ class ReadResults(Command):
     responses = [Response(descriptor='>HHHHHHHH')]
 
 
-@pytest.mark.needs_device
+@pytest.mark.skip
 def test_command_invocation():
     with ShdlcSerialPort(port='/dev/ttyUSB0', baudrate=460800) as port:
         bridge = SensorBridgeShdlcDevice(ShdlcConnection(port),
