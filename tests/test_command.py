@@ -1,8 +1,10 @@
 import struct
-from sensirion_i2c_adapter.command import Command, Request, Response
-from sensirion_i2c_adapter.i2c_channel import I2cChannel
-from sensirion_i2c_driver import SensirionI2cCommand
+
 from sensirion_i2c_driver import CrcCalculator
+from sensirion_i2c_driver import SensirionI2cCommand
+
+from sensirion_i2c_adapter.command import Command, Request
+from sensirion_i2c_adapter.i2c_channel import I2cChannel
 
 
 class TestConnection:
@@ -15,13 +17,15 @@ class TestConnection:
 
 
 class TestCommand1(SensirionI2cCommand):
-    def __init__(self, command=0xABCD, tx_data=None, read_delay=0.0, timeout=0, rx_length=0):
-        super().__init__(command, tx_data=tx_data, crc=CrcCalculator(8, 0x31, 0xFF, 0x00), read_delay=0.0, timeout=0,
+    def __init__(self, command=0xABCD, tx_data=None,
+                 read_delay=0.0, timeout=0, rx_length=0):
+        super().__init__(command, tx_data=tx_data,
+                         crc=CrcCalculator(8, 0x31, 0xFF, 0x00),
+                         read_delay=0.0, timeout=0,
                          rx_length=0)
 
 
 def test_command_no_additional_parameters():
-
     class CommandNoParameters(Command):
         requests = [Request(0xABCD, '>H')]
 
@@ -43,7 +47,7 @@ def test_command_one_byte_parameter():
 
 def test_command_2byte_parameter():
     class CommandNoParameters(Command):
-        requests = [Request(0xABCD, '>HH',num_params=1)]
+        requests = [Request(0xABCD, '>HH', num_params=1)]
 
     tc = TestCommand1(tx_data=struct.pack('>H', 1))
     connection = TestConnection(tc.tx_data)
@@ -69,5 +73,3 @@ def test_command_two_parameter():
     connection = TestConnection(tc.tx_data)
     channel = I2cChannel(connection, crc=CrcCalculator(8, 0x31, 0xFF, 0x00))
     CommandNoParameters()(channel, 1, 2)
-
-

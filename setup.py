@@ -34,12 +34,12 @@ setup(
     url='https://gitlab.sensirion.lokal/MSO-SW/drivers/python-driver-adapters',
     packages=find_packages(exclude=['tests', 'tests.*']),
     long_description=long_description,
-    python_requires='>=3.8',
+    python_requires='>=3.6',
     install_requires=[
     ],
     extras_require={
         'test': [
-            'flake8~=3.6.0',
+            'flake8~=3.7.8',
             'mock~=3.0.0',
             'pytest~=3.10.0',
             'pytest-cov~=2.6.0',

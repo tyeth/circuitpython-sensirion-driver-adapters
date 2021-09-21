@@ -3,6 +3,7 @@
 
 from sensirion_i2c_driver import I2cConnection
 from sensirion_i2c_driver.errors import I2cChecksumError
+
 from .channel import TxRxChannel, TxRxRequest
 
 
@@ -72,7 +73,7 @@ class I2cChannel(TxRxChannel):
         if not tx_data:
             return None
 
-        data = bytearray(tx_data[:cmd_width]) # the command is in the beginning of the tx_data
+        data = bytearray(tx_data[:cmd_width])  # the command is in the beginning of the tx_data
         tx_data = bytearray(tx_data[cmd_width:] or [])  # Python 2 compatibility
         for i in range(len(tx_data)):
             data.append(tx_data[i])
