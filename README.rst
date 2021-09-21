@@ -1,20 +1,16 @@
-Driver adapters
-====================
+sensirion_i2c_adapter
+========================
 
-This package contains the base classes used by driver generator.
-It handles low-level things like type conversions, packing of commands,
-checksum calculation, error handling etc.
+Install
+-------
+.. sourcecode:: bash
 
+    pip install sensirion_i2c_adapter
 
-Note
-----
+Recommended usage is within a virtualenv.
 
-Normally you shouldn't use this driver directly - instead you should use the
-device-specific driver for your actual device as it provides easy-to-use
-commands.
+Usage
+-----
+.. sourcecode:: python
 
-
-Installation and Usage
-----------------------
-
-The user manual is available at https://gitlab.sensirion.lokal/MSO-SW/drivers/python-driver-adapters.
+    import sensirion_i2c_adapter

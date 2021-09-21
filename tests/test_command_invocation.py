@@ -2,7 +2,7 @@
 # (c) Copyright 2019 Sensirion AG, Switzerland
 
 from __future__ import absolute_import, division, print_function
-
+import pytest
 from sensirion_shdlc_driver import ShdlcSerialPort, ShdlcConnection
 from sensirion_shdlc_sensorbridge import SensorBridgePort, \
     SensorBridgeShdlcDevice, SensorBridgeI2cProxy
@@ -25,6 +25,7 @@ class ReadResults(Command):
     responses = [Response(descriptor='>HHHHHHHH')]
 
 
+@pytest.mark.needs_device
 def test_command_invocation():
     with ShdlcSerialPort(port='/dev/ttyUSB0', baudrate=460800) as port:
         bridge = SensorBridgeShdlcDevice(ShdlcConnection(port),
@@ -52,6 +53,3 @@ def test_command_invocation():
             print(res)
 
         stop_measurement(channel)
-
-
-test_command_invocation()
