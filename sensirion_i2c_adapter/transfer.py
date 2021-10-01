@@ -24,7 +24,7 @@ class TxData:
         self._slave_address = slave_address
         self._device_busy_delay = device_busy_delay
 
-    def pack(self, argument_list):
+    def pack(self, argument_list=[]):
         data_to_pack = tuple([self._cmd_id] + argument_list)
         return bytearray(struct.pack(self._descriptor, *data_to_pack))
 
