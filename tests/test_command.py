@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# (c) Copyright 2021 Sensirion AG, Switzerland
 import struct
 from typing import Optional
 

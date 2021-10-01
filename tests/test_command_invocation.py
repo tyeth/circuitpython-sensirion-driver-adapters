@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-# (c) Copyright 2019 Sensirion AG, Switzerland
+# (c) Copyright 2021 Sensirion AG, Switzerland
 
 from __future__ import absolute_import, division, print_function
-
 import time
-
 import pytest
 from sensirion_shdlc_driver import ShdlcSerialPort, ShdlcConnection
 from sensirion_shdlc_sensorbridge import SensorBridgePort, \

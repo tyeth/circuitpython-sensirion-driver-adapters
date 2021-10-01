@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# (c) Copyright 2019 Sensirion AG, Switzerland
+# (c) Copyright 2021 Sensirion AG, Switzerland
 
 from sensirion_i2c_driver.errors import I2cChecksumError
 
@@ -26,7 +26,7 @@ class I2cChannel(TxRxChannel):
 
     @property
     def timeout(self):
-        return 0.5
+        return 0.0
 
     def strip_protocol(self, data):
         """
