@@ -14,6 +14,6 @@ additional information on auto-documenation on
 https://www.sphinx-doc.org/en/master/usage/quickstart.html#autodoc
 
 
-.. automodule:: sensirion_i2c_adapter.command
+.. automodule:: sensirion_i2c_adapter.transfer
 .. automodule:: sensirion_i2c_adapter.channel
 .. automodule:: sensirion_i2c_adapter.i2c_channel

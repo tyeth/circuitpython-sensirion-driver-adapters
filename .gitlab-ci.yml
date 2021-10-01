@@ -5,8 +5,15 @@ check_rst_syntax:
   script:
     - rst-lint *.rst
 
+py3p8_linux_build:
+  extends: .py3p8_linux_build_v2
+  variables:
+    PYTEST_ADDOPTS: '-m "not needs_device"'
+
 py3p8_64bit_win_build:
   extends: .py3p8_64bit_win_docker_build_v2
+  variables:
+    PYTEST_ADDOPTS: '-m "not needs_device"'
 
 py3p8_linux_sdist_v2:
   stage: build
@@ -24,7 +31,6 @@ deploy_staging:
 
 deploy_stable:
   extends: .deploy_stable_v2
-
 
 
 # Deploy all files within the "public" directory of the artifacts from the jobs

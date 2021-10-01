@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # (c) Copyright 2019 Sensirion AG, Switzerland
 
-from sensirion_i2c_driver import I2cConnection
 from sensirion_i2c_driver.errors import I2cChecksumError
 
 from .channel import TxRxChannel, TxRxRequest
@@ -9,7 +8,7 @@ from .channel import TxRxChannel, TxRxRequest
 
 class I2cChannel(TxRxChannel):
 
-    def __init__(self, connection: I2cConnection, slave_address=0, crc=None):
+    def __init__(self, connection, slave_address=0, crc=None):
         self._connection = connection
         self._slave_address = slave_address
         self._crc = crc
@@ -24,6 +23,10 @@ class I2cChannel(TxRxChannel):
         if slave_address is None:
             slave_address = self._slave_address
         return self._connection.execute(slave_address, tx_rx)
+
+    @property
+    def timeout(self):
+        return 0.5
 
     def strip_protocol(self, data):
         """
@@ -59,12 +62,13 @@ class I2cChannel(TxRxChannel):
         """
         Build the raw bytes to send from given command and TX data.
 
-        :param cmd_width: See
-            :py:meth:`~sensirion_i2c_driver.sensirion_command.SensirionI2cCommand.__init__`.
-        :param tx_data: See
-            :py:meth:`~sensirion_i2c_driver.sensirion_command.SensirionI2cCommand.__init__`.
-        :param crc: See
-            :py:meth:`~sensirion_i2c_driver.sensirion_command.SensirionI2cCommand.__init__`.
+        :param cmd_width:
+            This is the width of the command. Since CRC only starts after the command bytes we need to
+            have this information
+        :param tx_data:
+            The byte array to be transmitting
+        :param crc:
+            A callable object that computes the crc from a bytes array.
         :return:
             The raw bytes to send, or None if no write header is needed.
         :rtype:

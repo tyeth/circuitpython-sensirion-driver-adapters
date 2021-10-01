@@ -2,30 +2,49 @@
 # (c) Copyright 2019 Sensirion AG, Switzerland
 
 from __future__ import absolute_import, division, print_function
+
+import time
+
 import pytest
 from sensirion_shdlc_driver import ShdlcSerialPort, ShdlcConnection
 from sensirion_shdlc_sensorbridge import SensorBridgePort, \
     SensorBridgeShdlcDevice, SensorBridgeI2cProxy
 
-from sensirion_i2c_adapter.command import Command, Request, Response
 from sensirion_i2c_adapter.i2c_channel import I2cChannel
+from sensirion_i2c_adapter.transfer import Transfer, TxData, RxData, execute_transfer
 from sensirion_i2c_driver import I2cConnection, CrcCalculator
 
 
-class StartMeasurement(Command):
-    requests = [Request(0x21, ">H", device_busy_delay=2.0)]
+class StartO2Measurement(Transfer):
+    def pack(self):
+        return self.tx_data.pack([])
+
+    tx = TxData(0x3603, ">H", device_busy_delay=0.1)
 
 
-class StopMeasurements(Command):
-    requests = [Request(0x104, '>H', device_busy_delay=1.0)]
+class StopMeasurements(Transfer):
+    def pack(self):
+        return self.tx_data.pack([])
+
+    tx = TxData(0x3FF9, '>H', device_busy_delay=0.1)
 
 
-class ReadResults(Command):
-    requests = [Request(0x3C4, descriptor='>H', device_busy_delay=0.01)]
-    responses = [Response(descriptor='>HHHHHHHH')]
+class ReadResults(Transfer):
+    def pack(self):
+        return None
+
+    rx = RxData(descriptor='>HHH')
 
 
-@pytest.mark.skip
+class ReadProductIdentifier(Transfer):
+    def pack(self):
+        return self.tx_data.pack()
+
+    tx = TxData(0xE102, descriptor='>H')
+    rx = RxData(descriptor='>IHHH')
+
+
+@pytest.mark.needs_hardware
 def test_command_invocation():
     with ShdlcSerialPort(port='/dev/ttyUSB0', baudrate=460800) as port:
         bridge = SensorBridgeShdlcDevice(ShdlcConnection(port),
@@ -40,16 +59,18 @@ def test_command_invocation():
         i2c_transceiver = SensorBridgeI2cProxy(bridge,
                                                port=SensorBridgePort.ONE)
         channel = I2cChannel(I2cConnection(i2c_transceiver),
-                             slave_address=0x69,
+                             slave_address=0x29,
                              crc=CrcCalculator(8, 0x31, 0xFF, 0x00))
 
-        start_measurement = StartMeasurement()
+        res = execute_transfer(channel, ReadProductIdentifier())
+        print(res)
+        start_measurement = StartO2Measurement()
         read_result = ReadResults()
         stop_measurement = StopMeasurements()
-        start_measurement(channel)
-
+        execute_transfer(channel, start_measurement)
+        time.sleep(0.5)
         for i in range(100):
-            res = read_result(channel)
+            res = execute_transfer(channel, read_result)
             print(res)
 
-        stop_measurement(channel)
+        execute_transfer(channel, stop_measurement)
