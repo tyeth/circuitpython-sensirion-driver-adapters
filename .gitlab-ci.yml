@@ -22,11 +22,8 @@ py3p8_64bit_win_build:
     - python setup.py bdist_wheel -q
 
 py3p8_linux_sdist_v2:
-  stage: build
-  tags: [linux, docker]
-  image: registry.gitlab.sensirion.lokal/sensirion/docker/docker-python:3.8-20.04-2.6.0
-  script:
-    - python setup.py sdist
+    extends: .py3p8_linux_sdist_v2
+
 
 build_docs:
   extends: .build_docs_v2
