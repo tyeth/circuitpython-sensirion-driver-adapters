@@ -5,6 +5,14 @@ check_rst_syntax:
   script:
     - rst-lint *.rst
 
+py3p6_linux_build:
+  extends: .py3p6_linux_build_v2
+  script:
+  - pip install -e .[test]
+  - flake8
+  - pytest -m 'not needs_hardware'
+  - python3 setup.py bdist_wheel
+
 py3p8_linux_build:
   extends: .py3p8_linux_build_v2
   script:
