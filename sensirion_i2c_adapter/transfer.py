@@ -15,7 +15,8 @@ class TxData:
     def __init__(self, cmd_id,
                  descriptor,
                  device_busy_delay=0.0,
-                 slave_address=None):
+                 slave_address=None,
+                 ignore_ack=False):
         self._cmd_id = cmd_id
         self._command_width = 2
         if descriptor.startswith('>B'):
@@ -23,6 +24,7 @@ class TxData:
         self._descriptor = descriptor
         self._slave_address = slave_address
         self._device_busy_delay = device_busy_delay
+        self._ignore_acknowledge = ignore_ack
 
     def pack(self, argument_list=[]):
         data_to_pack = tuple([self._cmd_id] + argument_list)

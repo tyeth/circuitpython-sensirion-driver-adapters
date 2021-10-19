@@ -13,7 +13,8 @@ class I2cChannel(TxRxChannel):
         self._slave_address = slave_address
         self._crc = crc
 
-    def write_read(self, tx_data, payload_offset, response, device_busy_delay=0.0, slave_address=None):
+    def write_read(self, tx_data, payload_offset, response, device_busy_delay=0.0, slave_address=None,
+                   ignore_errors=False):
         tx_data = I2cChannel._build_tx_data(tx_data, payload_offset, self._crc)
         rx_len = 0
         if response:
@@ -22,7 +23,13 @@ class I2cChannel(TxRxChannel):
                             receive_length=rx_len)
         if slave_address is None:
             slave_address = self._slave_address
-        return self._connection.execute(slave_address, tx_rx)
+        try:
+            result = self._connection.execute(slave_address, tx_rx)
+        except Exception as error:
+            if not ignore_errors:
+                raise error
+            result = []
+        return result
 
     @property
     def timeout(self):
