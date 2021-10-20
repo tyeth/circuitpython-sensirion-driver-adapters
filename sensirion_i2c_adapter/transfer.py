@@ -65,6 +65,13 @@ class RxData:
 
 class Transfer(abc.ABC):
 
+    @property
+    def ignore_error(self):
+        tx = self.tx_data
+        if tx is not None:
+            return tx.ignore_acknowledge
+        return False
+
     @abc.abstractmethod
     def pack(self):
         raise NotImplementedError()
@@ -81,7 +88,7 @@ class Transfer(abc.ABC):
         tx = self.tx_data
         if tx is None:
             return 0
-        return self.tx_data.device_busy_delay
+        return tx.device_busy_delay
 
     @property
     def slave_address(self):
@@ -114,8 +121,8 @@ def execute_transfer(channel: TxRxChannel, *args):
     for t in transfers[:-1]:
         channel.write_read(t.pack(), t.command_width,
                            t.rx_data, device_busy_delay=t.device_busy_delay,
-                           slave_address=t.slave_address, ignore_errors=t.ignore_acknowledge)
+                           slave_address=t.slave_address, ignore_errors=t.ignore_error)
     t = transfers[-1]
     return channel.write_read(t.pack(), t.command_width,
                               t.rx_data, device_busy_delay=t.device_busy_delay,
-                              slave_address=t.slave_address)
+                              slave_address=t.slave_address, ignore_errors=t.ignore_error)
