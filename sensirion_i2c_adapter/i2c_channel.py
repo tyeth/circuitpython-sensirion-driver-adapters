@@ -28,7 +28,7 @@ class I2cChannel(TxRxChannel):
         except Exception as error:
             if not ignore_errors:
                 raise error
-            result = []
+            result = None
         return result
 
     @property

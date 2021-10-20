@@ -9,7 +9,8 @@ class TxRxChannel(abc.ABC):
     source to any destination"""
 
     @abc.abstractmethod
-    def write_read(self, tx_data, payload_offset, response, device_busy_delay=0.0, slave_address=None):
+    def write_read(self, tx_data, payload_offset, response, device_busy_delay=0.0, slave_address=None,
+                   ignore_errors=False):
         """
         transfers the data to and fr
         :param tx_data:
@@ -25,6 +26,9 @@ class TxRxChannel(abc.ABC):
             completed.
         :param slave_address:
             Used for i2c addressing. Denotes the i2c address of the receiving slave
+        :param ignore_errors:
+            Some transfers may generate an exception even when they execute properly. In these situations the exception
+            is swallowed and an empty result is returned
         :return:
             Return a tuple of the interpreted data or None if there is no response at all
         """

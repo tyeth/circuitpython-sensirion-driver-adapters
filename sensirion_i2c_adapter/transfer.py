@@ -42,6 +42,10 @@ class TxData:
     def device_busy_delay(self):
         return self._device_busy_delay
 
+    @property
+    def ignore_acknowledge(self):
+        return self._ignore_acknowledge
+
 
 class RxData:
 
@@ -110,7 +114,7 @@ def execute_transfer(channel: TxRxChannel, *args):
     for t in transfers[:-1]:
         channel.write_read(t.pack(), t.command_width,
                            t.rx_data, device_busy_delay=t.device_busy_delay,
-                           slave_address=t.slave_address)
+                           slave_address=t.slave_address, ignore_errors=t.ignore_acknowledge)
     t = transfers[-1]
     return channel.write_read(t.pack(), t.command_width,
                               t.rx_data, device_busy_delay=t.device_busy_delay,
