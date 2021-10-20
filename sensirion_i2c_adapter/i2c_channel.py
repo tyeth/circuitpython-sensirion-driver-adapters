@@ -19,7 +19,7 @@ class I2cChannel(TxRxChannel):
         rx_len = 0
         if response:
             rx_len = 3 * response.rx_length // 2
-        tx_rx = TxRxRequest(channel=self, response=response, tx_data=tx_bytes, device_busy_delay=device_busy_delay,
+        tx_rx = TxRxRequest(channel=self, response=response, tx_bytes=tx_bytes, device_busy_delay=device_busy_delay,
                             receive_length=rx_len)
         if slave_address is None:
             slave_address = self._slave_address
