@@ -15,7 +15,8 @@ class TxData:
     def __init__(self, cmd_id,
                  descriptor,
                  device_busy_delay=0.0,
-                 slave_address=None):
+                 slave_address=None,
+                 ignore_ack=False):
         self._cmd_id = cmd_id
         self._command_width = 2
         if descriptor.startswith('>B'):
@@ -23,6 +24,7 @@ class TxData:
         self._descriptor = descriptor
         self._slave_address = slave_address
         self._device_busy_delay = device_busy_delay
+        self._ignore_acknowledge = ignore_ack
 
     def pack(self, argument_list=[]):
         data_to_pack = tuple([self._cmd_id] + argument_list)
@@ -39,6 +41,10 @@ class TxData:
     @property
     def device_busy_delay(self):
         return self._device_busy_delay
+
+    @property
+    def ignore_acknowledge(self):
+        return self._ignore_acknowledge
 
 
 class RxData:
@@ -59,6 +65,13 @@ class RxData:
 
 class Transfer(abc.ABC):
 
+    @property
+    def ignore_error(self):
+        tx = self.tx_data
+        if tx is not None:
+            return tx.ignore_acknowledge
+        return False
+
     @abc.abstractmethod
     def pack(self):
         raise NotImplementedError()
@@ -75,7 +88,7 @@ class Transfer(abc.ABC):
         tx = self.tx_data
         if tx is None:
             return 0
-        return self.tx_data.device_busy_delay
+        return tx.device_busy_delay
 
     @property
     def slave_address(self):
@@ -108,8 +121,8 @@ def execute_transfer(channel: TxRxChannel, *args):
     for t in transfers[:-1]:
         channel.write_read(t.pack(), t.command_width,
                            t.rx_data, device_busy_delay=t.device_busy_delay,
-                           slave_address=t.slave_address)
+                           slave_address=t.slave_address, ignore_errors=t.ignore_error)
     t = transfers[-1]
     return channel.write_read(t.pack(), t.command_width,
                               t.rx_data, device_busy_delay=t.device_busy_delay,
-                              slave_address=t.slave_address)
+                              slave_address=t.slave_address, ignore_errors=t.ignore_error)

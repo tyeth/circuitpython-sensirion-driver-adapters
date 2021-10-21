@@ -9,10 +9,11 @@ class TxRxChannel(abc.ABC):
     source to any destination"""
 
     @abc.abstractmethod
-    def write_read(self, tx_data, payload_offset, response, device_busy_delay=0.0, slave_address=None):
+    def write_read(self, tx_bytes, payload_offset, response, device_busy_delay=0.0, slave_address=None,
+                   ignore_errors=False):
         """
         transfers the data to and fr
-        :param tx_data:
+        :param tx_bytes:
             Raw bytes to be transmitted
         :param payload_offset:
             The data my contain a header that needs to be left untouched, pushing the date through the protocol stack.
@@ -25,6 +26,9 @@ class TxRxChannel(abc.ABC):
             completed.
         :param slave_address:
             Used for i2c addressing. Denotes the i2c address of the receiving slave
+        :param ignore_errors:
+            Some transfers may generate an exception even when they execute properly. In these situations the exception
+            is swallowed and an empty result is returned
         :return:
             Return a tuple of the interpreted data or None if there is no response at all
         """
@@ -44,10 +48,10 @@ class TxRxChannel(abc.ABC):
 class TxRxRequest:
     """This class is an adapter to the class I2cConnection. It keeps compatibility with the SensirionI2cCommand"""
 
-    def __init__(self, channel, tx_data=None, response=None, device_busy_delay=0.0, receive_length=0):
+    def __init__(self, channel, tx_bytes=None, response=None, device_busy_delay=0.0, receive_length=0):
         self._channel = channel
         self._response = response
-        self._tx_data = tx_data
+        self._tx_data = tx_bytes
         self._device_busy_delay = device_busy_delay
         self._rx_length = receive_length
 
