@@ -12,7 +12,8 @@ class TxRxChannel(abc.ABC):
     def write_read(self, tx_bytes, payload_offset, response, device_busy_delay=0.0, slave_address=None,
                    ignore_errors=False):
         """
-        transfers the data to and fr
+        Transfers the data to and from sensor.
+
         :param tx_bytes:
             Raw bytes to be transmitted
         :param payload_offset:

@@ -7,6 +7,8 @@ from .channel import TxRxChannel, TxRxRequest
 
 
 class I2cChannel(TxRxChannel):
+    """This is the concrete channel implementation to be used with I2cConnection of the package
+    sensirion-i2c-driver"""
 
     def __init__(self, connection, slave_address=0, crc=None):
         self._connection = connection
