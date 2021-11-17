@@ -1,5 +1,5 @@
-sensirion_i2c_adapter
-========================
+sensirion-i2c-adapter
+=====================
 
 Install
 -------

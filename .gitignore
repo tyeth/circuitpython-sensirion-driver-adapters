@@ -9,3 +9,4 @@ htmlcov/
 .coverage
 *.pyc
 sensirion_i2c_adapter/__pycache__/
+docs/_build
