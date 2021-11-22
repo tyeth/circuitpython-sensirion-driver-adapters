@@ -35,6 +35,17 @@ py3p8_linux_sdist_v2:
 
 build_docs:
   extends: .build_docs_v2
+  script:
+    - apt-get update && apt-get install -y graphviz
+    - python setup.py install
+    - pip install -r docs/requirements.txt
+    - ./ci/set_git_config.sh
+    - sphinx-versioning build -r "$CI_COMMIT_REF_NAME" -w "$CI_COMMIT_REF_NAME" docs docs/_build/html
+  after_script: [] # overwrite after_script from template
+  artifacts:
+    paths: [docs/_build]
+    expire_in: 1 week
+    when: always
 
 
 deploy_staging:
@@ -42,6 +53,16 @@ deploy_staging:
 
 deploy_stable:
   extends: .deploy_stable_v2
+  environment:
+    name: pypi.org
+    url: https://pypi.org/project/sensirion-i2c-adapters/
+  before_script:
+    - pip install twine~=1.12.1
+  script:
+    - PKG_VERSION=$(python setup.py --version --quiet | tail -n1)
+    - TAG_VERSION=$(git describe --tags)
+    - if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then echo "Tag Version ($TAG_VERSION) != Package Version ($PKG_VERSION)" && exit 1; fi
+    - twine upload dist/*
 
 
 # Deploy all files within the "public" directory of the artifacts from the jobs
@@ -50,3 +71,16 @@ deploy_stable:
 pages:
   extends: .deploy_pages_v2
   dependencies: [build_docs]
+
+deploy_docs:
+  stage: deploy
+  tags: [linux, docker]
+  image: registry.gitlab.sensirion.lokal/sensirion/docker/docker-python:3.8-20.04-2.6.0
+  dependencies: []
+  only: [master, tags]
+  script:
+    - apt-get update && apt-get install -y graphviz
+    - python setup.py install
+    - pip install -r docs/requirements.txt
+    - ./ci/set_git_config.sh
+    - sphinx-versioning push docs gh-pages .

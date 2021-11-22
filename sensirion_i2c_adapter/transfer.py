@@ -48,7 +48,7 @@ class TxData:
 
 
 class RxData:
-
+    """Descriptor for data to be received"""
     def __init__(self, descriptor=None):
         self._descriptor = descriptor
         self._rx_length = 0
@@ -64,6 +64,7 @@ class RxData:
 
 
 class Transfer(abc.ABC):
+    """A transfer abstracts the data that is exchanged between host and sensor"""
 
     @property
     def ignore_error(self):

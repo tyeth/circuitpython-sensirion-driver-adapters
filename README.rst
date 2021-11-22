@@ -1,11 +1,11 @@
-sensirion_i2c_adapter
-========================
+sensirion-i2c-adapter
+=====================
 
 Install
 -------
 .. sourcecode:: bash
 
-    pip install sensirion_i2c_adapter
+    pip install sensirion-i2c-adapter
 
 Recommended usage is within a virtualenv.
 
