@@ -70,7 +70,7 @@ setup(
     author=author,
     author_email=author_email,
     description=description,
-    license='proprietary',
+    license='BSD 3-Clause License',
     keywords=keywords,
     url='http://developers.sensirion.com',
     packages=find_packages(exclude=['tests', 'tests.*']),
@@ -80,7 +80,6 @@ setup(
     extras_require=extras_require,
     classifiers=[
         'Intended Audience :: Developers',
-        'License :: Other/Proprietary License',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
