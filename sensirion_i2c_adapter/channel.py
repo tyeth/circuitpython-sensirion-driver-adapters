@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # (c) Copyright 2021 Sensirion AG, Switzerland
 
-from __future__ import annotations
-
 import abc
 from typing import Any
 
@@ -73,7 +71,7 @@ class AbstractMultiChannel(TxRxChannel):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def __enter__(self) -> AbstractMultiChannel:
+    def __enter__(self) -> "AbstractMultiChannel":
         """
         A MultiChannel is a context manager. The begin and end of the communication over the contained channels is
         marked by the __enter__ and __exit__ method.

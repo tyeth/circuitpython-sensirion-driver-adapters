@@ -23,8 +23,8 @@ install_requires = [
 extras_require = {
     'test': [
         'flake8~=3.7.8',
-        'pytest~=4.6.11',
-        'pytest-cov~=2.12.1',
+        'pytest~=7.0.1',
+        'pytest-cov~=3.0.0',
     ],
     'docs': [
         'sphinx~=2.2.1',
@@ -80,6 +80,7 @@ setup(
     extras_require=extras_require,
     classifiers=[
         'Intended Audience :: Developers',
+        'License :: Other/Proprietary License',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',

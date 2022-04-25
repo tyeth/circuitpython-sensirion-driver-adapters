@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # (c) Copyright 2021 Sensirion AG, Switzerland
 
-from __future__ import annotations
-
 from typing import Tuple, Optional, Iterator, Any
 
 from sensirion_i2c_adapter.channel import TxRxChannel, AbstractMultiChannel
@@ -37,7 +35,7 @@ class MultiChannel(AbstractMultiChannel):
         """
         Implementation of write read.
 
-        This implementation is only supported within the
+        Write read needs to be called in a open context (with statement block)
         """
         self._active_channel = next(self._channel_iterator)
         return self._active_channel.write_read(tx_bytes, payload_offset, response, device_busy_delay,

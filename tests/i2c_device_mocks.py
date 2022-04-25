@@ -29,13 +29,11 @@ class I2cSensorMock:
         assert address == self._i2c_address, "unsupported i2c address"
         cmd = struct.unpack(self._cmd_template, data[:self._cmd_width])
         device_logger.info(f'device {self._id} received commands {cmd}')
-        print(f'write {self._id}')
 
     def read(self, address, nr_of_bytes_to_return) -> bytes:
         nr_of_bytes = 2 * nr_of_bytes_to_return // 3
         assert address == self._i2c_address, "unsupported i2c address"
         device_logger.info(f'device {self._id} received read request for {nr_of_bytes} bytes')
-        print(f'read {self._id}')
         rx_data = [random.randint(0, 255) for i in range(nr_of_bytes)]
         data = bytearray()
         for i in range(len(rx_data)):
