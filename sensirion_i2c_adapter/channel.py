@@ -2,15 +2,18 @@
 # (c) Copyright 2021 Sensirion AG, Switzerland
 
 import abc
+from typing import Any
 
 
 class TxRxChannel(abc.ABC):
-    """This is the abstract base class for any channel. A channel is a transportation medium to transfer data from any
-    source to any destination"""
+    """
+    This is the abstract base class for any channel. A channel is a transportation medium to transfer data from any
+    source to any destination.
+    """
 
     @abc.abstractmethod
     def write_read(self, tx_bytes, payload_offset, response, device_busy_delay=0.0, slave_address=None,
-                   ignore_errors=False):
+                   ignore_errors=False) -> Any:
         """
         Transfers the data to and from sensor.
 
@@ -36,20 +39,59 @@ class TxRxChannel(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def strip_protocol(self, data):
+    def strip_protocol(self, data) -> None:
         """"""
         pass
 
     @property
     @abc.abstractmethod
-    def timeout(self):
+    def timeout(self) -> float:
         pass
+
+
+class AbstractMultiChannel(TxRxChannel):
+    """
+    This is the base class for any multi channel implementation. A multi channel is used to mimic simultaneous
+    communication with several sensors and is used by the MultiDeviceDecorator.
+    """
+
+    @property
+    @abc.abstractmethod
+    def channel_count(self) -> int:
+        """return: number of contained channels"""
+        raise NotImplementedError()
+
+    def get_channel(self, i: int) -> TxRxChannel:
+        """
+        Return a specific channel.
+
+        The returned channel my work properly only during the transaction (within the
+        with .. block). The exact behaviour is up to the the AbstractMultiChannel implementation.
+        """
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def __enter__(self) -> "AbstractMultiChannel":
+        """
+        A MultiChannel is a context manager. The begin and end of the communication over the contained channels is
+        marked by the __enter__ and __exit__ method.
+        """
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
+        """Marks the end of the communication over contained channels."""
+        raise NotImplementedError()
 
 
 class TxRxRequest:
     """This class is an adapter to the class I2cConnection. It keeps compatibility with the SensirionI2cCommand"""
 
-    def __init__(self, channel, tx_bytes=None, response=None, device_busy_delay=0.0, receive_length=0):
+    def __init__(self, channel,
+                 tx_bytes=None,
+                 response=None,
+                 device_busy_delay=0.0,
+                 receive_length=0) -> None:
         self._channel = channel
         self._response = response
         self._tx_data = tx_bytes
