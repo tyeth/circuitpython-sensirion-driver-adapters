@@ -1,5 +1,10 @@
 CHANGELOG
 ---------
+
+1.1.0
+:::::
+- Support to work with multiple sensors at the same time
+
 1.0.1
 :::::
 
