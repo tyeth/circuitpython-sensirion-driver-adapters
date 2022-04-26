@@ -64,14 +64,6 @@ deploy_stable:
     - if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then echo "Tag Version ($TAG_VERSION) != Package Version ($PKG_VERSION)" && exit 1; fi
     - twine upload dist/*
 
-
-# Deploy all files within the "public" directory of the artifacts from the jobs
-# specified as dependencies. Job must be named pages, otherwise gitlab does
-# not deploy to gitlab pages.
-pages:
-  extends: .deploy_pages_v2
-  dependencies: [build_docs]
-
 deploy_docs:
   stage: deploy
   tags: [linux, docker]
