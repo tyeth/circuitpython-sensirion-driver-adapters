@@ -3,10 +3,26 @@
 import struct
 from typing import Optional
 
-from sensirion_i2c_adapter.i2c_channel import I2cChannel
-from sensirion_i2c_adapter.transfer import Transfer, TxData, execute_transfer
+import pytest
 from sensirion_i2c_driver import CrcCalculator
 from sensirion_i2c_driver import SensirionI2cCommand
+
+from sensirion_i2c_adapter.i2c_channel import I2cChannel
+from sensirion_i2c_adapter.transfer import Transfer, TxData, execute_transfer, RxData
+from tests.i2c_device_mocks import I2cProgrammerMock
+
+
+class TestResultProvider:
+
+    def __init__(self, data_array):
+        self._data = data_array
+
+    def write(self, address, data):
+        ...
+
+    def read(self, address, length):
+        data_length = length // 3 * 2
+        return struct.pack(f'>{data_length}B', *self._data)
 
 
 class DummyConnection:
@@ -108,3 +124,25 @@ def test_command_two_parameter():
     connection = DummyConnection(tc.tx_data)
     channel = I2cChannel(connection, crc=CrcCalculator(8, 0x31, 0xFF, 0x00))
     execute_transfer(channel, TransferTwoParameters(p1=1, p2=2))
+
+
+@pytest.mark.parametrize("format, input, expected", [
+    ('6B', (0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff), 0xaabbccddeeff),
+    ('3H', (0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff), 0xaabbccddeeff),
+    ('2I', (0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff), 0x8899aabbccddeeff),
+    ('4I', (0x00, 0x11, 0x22, 0x33,
+            0x44, 0x55, 0x66, 0x77,
+            0x88, 0x99, 0xaa, 0xbb,
+            0xcc, 0xdd, 0xee, 0xff), 0x00112233445566778899aabbccddeeff)
+])
+def test_command_array_conversion(format, input, expected):
+    class TransferWithArrayReturn(Transfer):
+        def pack(self):
+            return self.tx_data.pack()
+
+        tx = TxData(cmd_id=0x01, descriptor='>H')
+        rx = RxData(descriptor=f'>{format}', convert_to_int=True)
+
+    channel = I2cChannel(I2cProgrammerMock(TestResultProvider(input)))
+    result, = execute_transfer(channel, TransferWithArrayReturn())
+    assert (result == expected)

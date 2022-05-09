@@ -28,7 +28,7 @@ class Config:
     """Holds the configuration of a single attached SensorBridge device.
 
     :param serial_port: Serial port used by a SensorBridge device.
-    :param ports: SensorBridge port used to communicate with the desired sensor.
+    :param ports: SensorBridge port(s) used to communicate with the desired sensor(s).
     """
     def __init__(self, serial_port: str, ports: UsedPorts) -> None:
         self.serial_port: str = serial_port
@@ -48,9 +48,9 @@ class I2cMultiSensorBridgeConnection:
 
     The multi-channel object with N channels can be used to communicate simultaneously with N different sensors
     :param config_list: List of configuration objects.
-    :param baud_rate: Uart speed to be used for the channel. The same baud rate will be used with all SensorBridge
+    :param baud_rate: Uart speed to be used for the multi-channel. The same baud rate will be used with all SensorBridge
         devices.
-    :param i2c_frequencey: The I2c frequencey used for communication with the sensors.
+    :param i2c_frequency: The I2c frequency used for communication with the sensors.
     :param voltage: The supply voltage used by the attached sensors.
     """
     def __init__(self, config_list: Iterable[Config], baud_rate: int, i2c_frequency: int, voltage: float) -> None:

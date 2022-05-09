@@ -3,9 +3,16 @@
 from __future__ import absolute_import, division, print_function
 
 import abc
+import re
 import struct
+from functools import reduce, partial
+from typing import Iterable, Tuple
 
 from .channel import TxRxChannel
+
+
+def array_to_integer(element_bit_width: int, data: Iterable[int]) -> Tuple[int]:
+    return reduce(lambda x, y: (x << element_bit_width) + y, data, 0),
 
 
 class TxData:
@@ -49,18 +56,38 @@ class TxData:
 
 class RxData:
     """Descriptor for data to be received"""
-    def __init__(self, descriptor=None):
+
+    is_array = re.compile(r'>\d+(?P<INT_TYPE>(B|H|I))$')
+    element_size_map = {'B': 8, 'I': 32, 'H': 16}
+
+    def __init__(self, descriptor=None, convert_to_int=False):
         self._descriptor = descriptor
         self._rx_length = 0
-        if self._descriptor is not None:
-            self._rx_length = struct.calcsize(self._descriptor)
+        self._conversion_function = None
+        if self._descriptor is None:
+            return
+        self._rx_length = struct.calcsize(self._descriptor)
+
+        # compute to integer conversion if required
+        if not convert_to_int:
+            return
+
+        match = RxData.is_array.match(descriptor)
+        if not match:
+            return
+
+        bit_width = RxData.element_size_map[match.group('INT_TYPE')]
+        self._conversion_function = partial(array_to_integer, element_bit_width=bit_width)
 
     @property
     def rx_length(self):
         return self._rx_length
 
     def unpack(self, data):
-        return struct.unpack(self._descriptor, data)
+        data = struct.unpack(self._descriptor, data)
+        if self._conversion_function is None:
+            return data
+        return self._conversion_function(data=data)
 
 
 class Transfer(abc.ABC):
