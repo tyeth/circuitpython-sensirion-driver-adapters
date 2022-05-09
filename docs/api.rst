@@ -16,3 +16,11 @@ Transfer:
 ---------
 .. automodule:: sensirion_i2c_adapter.transfer
    :members:
+
+Multi-Device Support:
+---------------------
+.. automodule:: sensirion_i2c_adapter.multi_device_support
+
+Multi-channel SensorBridge:
+.. automodule:: sensirion_i2c_adapter.multi_sensor_bridge
+

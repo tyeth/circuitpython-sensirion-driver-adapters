@@ -18,12 +18,18 @@ from sensirion_i2c_adapter.multi_channel import MultiChannel
 
 
 class UsedPorts(IntFlag):
+    """Flag to indicate which ports being used."""
     PORT_1 = 1
     PORT_2 = 2
     ALL = 3
 
 
 class Config:
+    """Holds the configuration of a single attached SensorBridge device.
+
+    :param serial_port: Serial port used by a SensorBridge device.
+    :param ports: SensorBridge port used to communicate with the desired sensor.
+    """
     def __init__(self, serial_port: str, ports: UsedPorts) -> None:
         self.serial_port: str = serial_port
         self.selected_ports: UsedPorts = ports
@@ -36,6 +42,17 @@ class SensorBridgeLiveInfo:
 
 
 class I2cMultiSensorBridgeConnection:
+    """
+    The class I2cMultiSensorBridgeConnection is a convenience method to support the creation of a multi-channel
+    object for one or several SensorBridges devices.
+
+    The multi-channel object with N channels can be used to communicate simultaneously with N different sensors
+    :param config_list: List of configuration objects.
+    :param baud_rate: Uart speed to be used for the channel. The same baud rate will be used with all SensorBridge
+        devices.
+    :param i2c_frequencey: The I2c frequencey used for communication with the sensors.
+    :param voltage: The supply voltage used by the attached sensors.
+    """
     def __init__(self, config_list: Iterable[Config], baud_rate: int, i2c_frequency: int, voltage: float) -> None:
         self._config_list = config_list
         self._baud_rate = baud_rate
@@ -65,16 +82,20 @@ class I2cMultiSensorBridgeConnection:
         return self
 
     def get_multi_channel(self, i2c_address, crc: CrcCalculator) -> AbstractMultiChannel:
+        """Create a multi-channel object for the configured SensorBridge devices and selected SensorBridge ports.
+        """
         assert len(self._proxies) > 0, "Wrong usage: proxies not initialized"
         channels = tuple([I2cChannel(I2cConnection(x), i2c_address, crc) for x in self._proxies])
         return MultiChannel(channels)
 
     def switch_supply_off(self):
+        """ Switch the supply off for all connected sensors."""
         for bridge_live in self._sensor_bridges:
             for port in bridge_live.ports:
                 bridge_live.sensor_bridge.switch_supply_off(port)
 
     def switch_supply_on(self):
+        """ Switch the supply on for all connected sensors."""
         for bridge_live in self._sensor_bridges:
             for port in bridge_live.ports:
                 bridge_live.sensor_bridge.switch_supply_on(port)
