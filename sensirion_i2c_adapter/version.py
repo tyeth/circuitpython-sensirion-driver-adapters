@@ -3,4 +3,4 @@
 
 from __future__ import absolute_import, division, print_function
 
-version = "1.1.0"
+version = "1.2.0"
