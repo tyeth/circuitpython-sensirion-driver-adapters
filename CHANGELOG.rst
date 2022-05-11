@@ -1,6 +1,10 @@
 CHANGELOG
 ---------
 
+1.2.0
+:::::
+- Single byte array response can be represented as integer.
+
 1.1.0
 :::::
 - Support to work with multiple sensors at the same time
