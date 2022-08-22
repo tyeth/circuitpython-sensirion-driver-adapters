@@ -8,10 +8,10 @@ from typing import Optional, Tuple, Any
 
 from sensirion_i2c_driver.crc_calculator import CrcCalculator
 
-from sensirion_i2c_adapter.channel import TxRxChannel, TxRxRequest, AbstractMultiChannel
-from sensirion_i2c_adapter.i2c_channel import I2cChannel
-from sensirion_i2c_adapter.multi_channel import MultiChannel
-from sensirion_i2c_adapter.transfer import Transfer, TxData, RxData, execute_transfer
+from sensirion_driver_adapters.channel import TxRxChannel, TxRxRequest, AbstractMultiChannel
+from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
+from sensirion_driver_adapters.multi_channel import MultiChannel
+from sensirion_driver_adapters.transfer import Transfer, TxData, RxData, execute_transfer
 
 device_logger = logging.getLogger('device_logger')
 device_logger.setLevel(logging.INFO)

@@ -4,7 +4,7 @@
 from sensirion_i2c_driver.crc_calculator import CrcCalculator
 
 import i2c_device_mocks as mocks
-from sensirion_i2c_adapter.multi_device_support import multi_driver
+from sensirion_driver_adapters.multi_device_support import multi_driver
 
 
 @multi_driver(mocks.DummyDriver)

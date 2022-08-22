@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import partial, partialmethod
 from typing import TypeVar, Callable, Type
 
-from sensirion_i2c_adapter.channel import AbstractMultiChannel
+from sensirion_driver_adapters.channel import AbstractMultiChannel
 
 T1 = TypeVar("T1")
 T2 = TypeVar("T2")

@@ -32,7 +32,7 @@ extras_require = {
     ]
 }
 
-package_name = "sensirion-i2c-adapter"
+package_name = "sensirion-driver-adapters"
 author = 'Rolf Laich'
 author_email = 'rolf.laich@sensirion.com'
 description = 'adapter classes to use sensirion_i2c_driver package'
