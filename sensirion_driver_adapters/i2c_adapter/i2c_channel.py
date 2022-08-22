@@ -3,7 +3,7 @@
 
 from sensirion_i2c_driver.errors import I2cChecksumError
 
-from .channel import TxRxChannel, TxRxRequest
+from sensirion_driver_adapters.channel import TxRxChannel, TxRxRequest
 
 
 class I2cChannel(TxRxChannel):
