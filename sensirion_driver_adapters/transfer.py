@@ -58,6 +58,7 @@ class RxData:
     """Descriptor for data to be received"""
 
     is_array = re.compile(r'>\d+(?P<INT_TYPE>(B|H|I))$')
+    field_match = re.compile(r'(?P<length>\d*)(?P<descriptor>(h|H|b|B|i|I|\?|s|q|Q|f|d))')
     element_size_map = {'B': 8, 'I': 32, 'H': 16}
 
     def __init__(self, descriptor=None, convert_to_int=False):
@@ -88,6 +89,30 @@ class RxData:
         if self._conversion_function is None:
             return data
         return self._conversion_function(data=data)
+
+    def unpack_dynamic_sized(self, data):
+        descriptor_pos, data_pos = 1, 0
+        unpacked = []
+        match = self.field_match.match(self._descriptor, descriptor_pos)
+        while match:
+            descriptor = match.group('descriptor')
+            elem_size = struct.calcsize(descriptor)
+            length = match.group('length')
+            descriptor_pos += len(length) + len(descriptor)
+            if length:
+                field_len = 0
+                for i in range(data_pos, min(data_pos + elem_size * int(length), len(data))):
+                    if data[i] == 0 and descriptor == 's':  # in SHDLC we have 0 delimeted arrays
+                        break
+                    field_len += 1
+                descriptor = f'{field_len // elem_size}{descriptor}'
+                elem_size = struct.calcsize(descriptor)
+            unpacked.extend(struct.unpack_from(descriptor, data, data_pos))
+            data_pos += elem_size
+            match = self.field_match.match(self._descriptor, descriptor_pos)
+        if self._conversion_function:
+            return self._conversion_function(unpacked)
+        return tuple(unpacked)
 
 
 class Transfer(abc.ABC):
