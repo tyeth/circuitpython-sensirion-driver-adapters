@@ -3,25 +3,27 @@
 
 import logging
 import struct
-
-from typing import Any
+from typing import Any, Iterable, Optional, Tuple
 
 from sensirion_shdlc_driver.errors import ShdlcDeviceError, ShdlcResponseError
 from sensirion_shdlc_driver.port import ShdlcPort
 
 from sensirion_driver_adapters.channel import TxRxChannel
+from sensirion_driver_adapters.rx_tx_data import RxData
 
 log = logging.getLogger(__name__)
 
 
 class ShdlcChannel(TxRxChannel):
 
-    def __init__(self, shdlc_port: ShdlcPort, channel_delay: float) -> None:
+    def __init__(self, shdlc_port: ShdlcPort, channel_delay: float = 0.05, shdlc_address: int = 0) -> None:
         self._port = shdlc_port
         self._channel_delay = channel_delay
+        self._address = shdlc_address
 
-    def write_read(self, tx_bytes, payload_offset, response, device_busy_delay=0.0, slave_address=None,
-                   ignore_errors=False) -> Any:
+    def write_read(self, tx_bytes: Iterable, payload_offset: int,
+                   response: RxData, device_busy_delay: float = 0.0, slave_address: Optional[int] = None,
+                   ignore_errors: bool = False) -> Optional[Tuple[Any, ...]]:
         """
         Transfers the data to and from sensor.
 
@@ -44,12 +46,11 @@ class ShdlcChannel(TxRxChannel):
         :return:
             Return a tuple of the interpreted data or None if there is no response at all
         """
-        if not slave_address:
-            slave_address = 0
+        shdlc_address = slave_address or self._address
         cmd_id = struct.unpack('>B', tx_bytes[0:payload_offset])[0]
         data = tx_bytes[payload_offset:]
         timeout = max(self._channel_delay, device_busy_delay)
-        rx_addr, rx_cmd, rx_state, rx_data = self._port.transceive(slave_address=slave_address,
+        rx_addr, rx_cmd, rx_state, rx_data = self._port.transceive(slave_address=shdlc_address,
                                                                    command_id=cmd_id,
                                                                    data=data,
                                                                    response_timeout=timeout)
@@ -80,4 +81,4 @@ class ShdlcChannel(TxRxChannel):
 
     @property
     def timeout(self) -> float:
-        self._channel_delay
+        return self._channel_delay

@@ -5,8 +5,9 @@ import pytest
 from sensirion_shdlc_driver import ShdlcSerialPort
 from sensirion_shdlc_driver.errors import ShdlcDeviceError
 
+from sensirion_driver_adapters.rx_tx_data import RxData, TxData
 from sensirion_driver_adapters.shdlc_adapter.shdlc_channel import ShdlcChannel
-from sensirion_driver_adapters.transfer import execute_transfer, Transfer, TxData, RxData
+from sensirion_driver_adapters.transfer import execute_transfer, Transfer
 
 
 class ProductType(Transfer):

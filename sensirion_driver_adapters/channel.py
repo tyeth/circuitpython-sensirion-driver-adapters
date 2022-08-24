@@ -2,7 +2,9 @@
 # (c) Copyright 2021 Sensirion AG, Switzerland
 
 import abc
-from typing import Any
+from typing import Any, Iterable, Optional, Tuple
+
+from sensirion_driver_adapters.rx_tx_data import RxData
 
 
 class TxRxChannel(abc.ABC):
@@ -12,8 +14,9 @@ class TxRxChannel(abc.ABC):
     """
 
     @abc.abstractmethod
-    def write_read(self, tx_bytes, payload_offset, response, device_busy_delay=0.0, slave_address=None,
-                   ignore_errors=False) -> Any:
+    def write_read(self, tx_bytes: Iterable, payload_offset: int,
+                   response: RxData, device_busy_delay: float = 0.0, slave_address: Optional[int] = None,
+                   ignore_errors: bool = False) -> Optional[Tuple[Any, ...]]:
         """
         Transfers the data to and from sensor.
 
