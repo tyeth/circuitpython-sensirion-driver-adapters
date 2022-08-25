@@ -1,6 +1,10 @@
 CHANGELOG
 ---------
 
+2.0.1
+:::::
+- Fix version 2.0.0
+
 2.0.0
 :::::
 - Change package name to sensirion-driver-adapters.

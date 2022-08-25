@@ -54,20 +54,20 @@ class ShdlcChannel(TxRxChannel):
                                                                    command_id=cmd_id,
                                                                    data=data,
                                                                    response_timeout=timeout)
-        if rx_addr != slave_address:
+        if rx_addr != shdlc_address:
             raise ShdlcResponseError("Received slave address {} instead of {}."
-                                     .format(rx_addr, slave_address))
+                                     .format(rx_addr, shdlc_address))
         if rx_cmd != cmd_id:
             raise ShdlcResponseError("Received command ID 0x{:02X} instead of "
                                      "0x{:02X}.".format(rx_cmd, cmd_id))
         error_state = True if rx_state & 0x80 else False
         if error_state:
             log.warning("SHDLC device with address {} is in error state."
-                        .format(slave_address))
+                        .format(shdlc_address))
         error_code = rx_state & 0x7F
         if error_code:
             log.warning("SHDLC device with address {} returned error {}."
-                        .format(slave_address, error_code))
+                        .format(shdlc_address, error_code))
             raise ShdlcDeviceError(error_code)  # Command failed to execute
         if response:
             # The size of strings (and arrays?) is not known before receiving the response. The indications
