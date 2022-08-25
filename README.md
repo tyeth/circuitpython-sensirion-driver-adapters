@@ -1,9 +1,10 @@
-# Sensirion I2c Adapter
+# Sensirion Drvier Adapters
 
 This repository contains adapter classes that can be used to separate the
 logic of packaging user data into a byte stream and using that byte
 stream in different channels. 
-The classes can be used as adapters to the *sensirion_i2c_driver.I2cConnection*.
+The classes can be used as adapters to the *sensirion_i2c_driver.I2cConnection* and 
+*sensirion_shdlc_driver.ShdlcSerialPort*.
 
 
 ## Usage
