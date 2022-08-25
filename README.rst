@@ -5,7 +5,7 @@ Install
 -------
 .. sourcecode:: bash
 
-    pip install sensirion-i2c-adapter
+    pip install sensirion-driver-adapters
 
 Recommended usage is within a virtualenv.
 
@@ -13,4 +13,4 @@ Usage
 -----
 .. sourcecode:: python
 
-    import sensirion_i2c_adapter
+    import sensirion_driver_adapters

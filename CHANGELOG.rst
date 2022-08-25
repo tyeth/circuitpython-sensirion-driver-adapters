@@ -1,6 +1,12 @@
 CHANGELOG
 ---------
 
+2.0.0
+:::::
+- Change package name to sensirion-driver-adapters.
+- Allows to use the i2c and shdlc sensors with the
+  standard sensirion drivers.
+
 1.2.0
 :::::
 - Single byte array response can be represented as integer.
@@ -22,4 +28,5 @@ CHANGELOG
 0.9.0
 :::::
 - Initial release
+
 
