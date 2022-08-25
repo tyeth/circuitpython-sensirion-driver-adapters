@@ -8,7 +8,8 @@ from sensirion_i2c_driver import CrcCalculator
 from sensirion_i2c_driver import SensirionI2cCommand
 
 from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
-from sensirion_driver_adapters.transfer import Transfer, TxData, execute_transfer, RxData
+from sensirion_driver_adapters.transfer import Transfer, execute_transfer
+from sensirion_driver_adapters.rx_tx_data import TxData, RxData
 from tests.i2c_device_mocks import I2cProgrammerMock
 
 

@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 # (c) Copyright 2021 Sensirion AG, Switzerland
 
+from typing import Any, Iterable, Optional, Tuple
+
 from sensirion_i2c_driver.errors import I2cChecksumError
 
 from sensirion_driver_adapters.channel import TxRxChannel, TxRxRequest
+from sensirion_driver_adapters.rx_tx_data import RxData
 
 
 class I2cChannel(TxRxChannel):
@@ -15,8 +18,10 @@ class I2cChannel(TxRxChannel):
         self._slave_address = slave_address
         self._crc = crc
 
-    def write_read(self, tx_bytes, payload_offset, response, device_busy_delay=0.0, slave_address=None,
-                   ignore_errors=False):
+    def write_read(self, tx_bytes: Iterable, payload_offset: int,
+                   response: RxData, device_busy_delay: float = 0.0, slave_address: Optional[int] = None,
+                   ignore_errors: bool = False) -> Optional[Tuple[Any, ...]]:
+
         tx_bytes = I2cChannel._build_tx_data(tx_bytes, payload_offset, self._crc)
         rx_len = 0
         if response:

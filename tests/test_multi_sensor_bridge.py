@@ -8,7 +8,8 @@ from sensirion_i2c_driver.crc_calculator import CrcCalculator
 from sensirion_driver_adapters.channel import AbstractMultiChannel
 from sensirion_driver_adapters.multi_device_support import multi_driver
 from sensirion_driver_adapters.multi_sensor_bridge import Config, UsedPorts, I2cMultiSensorBridgeConnection
-from sensirion_driver_adapters.transfer import Transfer, RxData, TxData, execute_transfer
+from sensirion_driver_adapters.transfer import Transfer, execute_transfer
+from sensirion_driver_adapters.rx_tx_data import RxData, TxData
 
 
 class ExecuteSelfTest(Transfer):
