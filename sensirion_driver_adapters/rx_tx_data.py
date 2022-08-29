@@ -30,7 +30,12 @@ class TxData:
         self._ignore_acknowledge = ignore_ack
 
     def pack(self, argument_list=[]):
-        data_to_pack = tuple([self._cmd_id] + argument_list)
+        data_to_pack = [self._cmd_id]
+        for arg in argument_list:
+            if isinstance(arg, (list, tuple)):
+                data_to_pack.extend(arg)
+            else:
+                data_to_pack.append(arg)
         return bytearray(struct.pack(self._descriptor, *data_to_pack))
 
     @property

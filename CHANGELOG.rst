@@ -1,6 +1,10 @@
 CHANGELOG
 ---------
 
+2.1.0
+:::::
+- Allow to use directly pack sequence type arguments.
+
 2.0.1
 :::::
 - Fix version 2.0.0
