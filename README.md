@@ -6,6 +6,9 @@ stream in different channels.
 The classes can be used as adapters to the *sensirion_i2c_driver.I2cConnection* and 
 *sensirion_shdlc_driver.ShdlcSerialPort*.
 
+The python package sensirion-driver-adapters replaces the package sensirion-i2c-adapter. The latter is deprecated and
+will no longer be maintained. All functionality of sensirion-i2c-adapter is contained within the package
+sensirion-driver-adapters.
 
 ## Usage
 
