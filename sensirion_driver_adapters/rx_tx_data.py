@@ -92,11 +92,12 @@ class RxData:
         return self._conversion_function(data=data)
 
     def unpack_dynamic_sized(self, data):
+        byte_order_specifier = self._descriptor[0]
         descriptor_pos, data_pos = 1, 0
         unpacked = []
         match = self.field_match.match(self._descriptor, descriptor_pos)
         while match:
-            descriptor = match.group('descriptor')
+            descriptor = f"{byte_order_specifier}{match.group('descriptor')}"
             elem_size = struct.calcsize(descriptor)
             length = match.group('length')
             descriptor_pos += len(length) + len(descriptor)
