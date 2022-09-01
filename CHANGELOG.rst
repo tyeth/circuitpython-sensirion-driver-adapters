@@ -1,6 +1,10 @@
 CHANGELOG
 ---------
 
+2.1.2
+:::::
+- Update readme
+
 2.1.1
 :::::
 - Fix dynamic_sized_unpack
