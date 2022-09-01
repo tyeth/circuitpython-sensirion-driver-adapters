@@ -1,6 +1,10 @@
 CHANGELOG
 ---------
 
+2.1.1
+:::::
+- Fix dynamic_sized_unpack
+
 2.1.0
 :::::
 - Allow to use directly pack sequence type arguments.
