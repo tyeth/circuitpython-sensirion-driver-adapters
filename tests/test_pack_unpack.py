@@ -2,8 +2,8 @@
 # (c) Copyright 2022 Sensirion AG, Switzerland
 
 import struct
-
 from typing import Iterable
+
 import pytest
 
 from sensirion_driver_adapters.rx_tx_data import RxData, TxData
@@ -34,7 +34,8 @@ def test_unpack(rx: RxData, data):
     assert not any(not_equal)
 
 
-@pytest.mark.parametrize("rx, data", [(RxData(">HH"), (0xABCD, 1234,))])
+@pytest.mark.parametrize("rx, data", [(RxData(">HH"), (0xABCD, 1234)),
+                                      (RxData(">HH8B"), (0xABCD, 1234, 1, 2, 3, 4, 5, 6, 7, 8))])
 def test_dynamic_unpack(rx: RxData, data):
     packed = struct.pack(rx._descriptor, *data)
     unpacked = rx.unpack_dynamic_sized(packed)

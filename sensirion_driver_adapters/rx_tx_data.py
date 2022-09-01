@@ -97,7 +97,7 @@ class RxData:
         unpacked = []
         match = self.field_match.match(self._descriptor, descriptor_pos)
         while match:
-            descriptor = f"{byte_order_specifier}{match.group('descriptor')}"
+            descriptor = match.group('descriptor')
             elem_size = struct.calcsize(descriptor)
             length = match.group('length')
             descriptor_pos += len(length) + len(descriptor)
@@ -109,6 +109,7 @@ class RxData:
                     field_len += 1
                 descriptor = f'{field_len // elem_size}{descriptor}'
                 elem_size = struct.calcsize(descriptor)
+            descriptor = f"{byte_order_specifier} {descriptor}"
             unpacked.extend(struct.unpack_from(descriptor, data, data_pos))
             data_pos += elem_size
             match = self.field_match.match(self._descriptor, descriptor_pos)
