@@ -1,6 +1,10 @@
 CHANGELOG
 ---------
 
+2.1.4
+:::::
+- unreleased
+
 2.1.3
 :::::
 - Fix and generalize packing/ unpacking of sequence data
