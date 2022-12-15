@@ -3,15 +3,17 @@
 from __future__ import absolute_import, division, print_function
 
 import abc
+from typing import Optional
 
-from .channel import TxRxChannel
+from sensirion_driver_adapters.channel import TxRxChannel
+from sensirion_driver_adapters.rx_tx_data import RxData, TxData
 
 
 class Transfer(abc.ABC):
     """A transfer abstracts the data that is exchanged between host and sensor"""
 
     @property
-    def ignore_error(self):
+    def ignore_error(self) -> bool:
         tx = self.tx_data
         if tx is not None:
             return tx.ignore_acknowledge
@@ -22,34 +24,41 @@ class Transfer(abc.ABC):
         raise NotImplementedError()
 
     @property
-    def command_width(self):
+    def command_width(self) -> int:
         tx = self.tx_data
         if tx is None:
             return 0
         return self.tx_data.command_width
 
     @property
-    def device_busy_delay(self):
+    def device_busy_delay(self) -> float:
         tx = self.tx_data
         if tx is None:
-            return 0
+            return 0.0
         return tx.device_busy_delay
 
     @property
-    def slave_address(self):
+    def slave_address(self) -> Optional[int]:
         tx = self.tx_data
         if tx is None:
             return None
         return self.tx_data.slave_address
 
     @property
-    def tx_data(self):
+    def post_processing_time(self) -> Optional[float]:
+        try:
+            return getattr(self.__class__, 'post_processing_time')
+        except AttributeError:
+            return None
+
+    @property
+    def tx_data(self) -> Optional[TxData]:
         if not hasattr(self.__class__, 'tx'):
             return None
         return getattr(self.__class__, 'tx')
 
     @property
-    def rx_data(self):
+    def rx_data(self) -> Optional[RxData]:
         if not hasattr(self.__class__, 'rx'):
             return None
         return getattr(self.__class__, 'rx')

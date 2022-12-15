@@ -18,15 +18,21 @@ class I2cChannel(TxRxChannel):
         self._slave_address = slave_address
         self._crc = crc
 
-    def write_read(self, tx_bytes: Iterable, payload_offset: int,
-                   response: RxData, device_busy_delay: float = 0.0, slave_address: Optional[int] = None,
+    def write_read(self, tx_bytes: Iterable,
+                   payload_offset: int,
+                   response: RxData,
+                   device_busy_delay: float = 0.0,
+                   post_processing_delay: Optional[float] = None,
+                   slave_address: Optional[int] = None,
                    ignore_errors: bool = False) -> Optional[Tuple[Any, ...]]:
 
         tx_bytes = I2cChannel._build_tx_data(tx_bytes, payload_offset, self._crc)
         rx_len = 0
         if response:
             rx_len = 3 * response.rx_length // 2
-        tx_rx = TxRxRequest(channel=self, response=response, tx_bytes=tx_bytes, device_busy_delay=device_busy_delay,
+        tx_rx = TxRxRequest(channel=self, response=response, tx_bytes=tx_bytes,
+                            device_busy_delay=device_busy_delay,
+                            post_processing_time=post_processing_delay,
                             receive_length=rx_len)
         if slave_address is None:
             slave_address = self._slave_address

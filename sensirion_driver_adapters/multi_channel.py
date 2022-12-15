@@ -30,7 +30,12 @@ class MultiChannel(AbstractMultiChannel):
         self._active_channel = None
         return exc_type is None
 
-    def write_read(self, tx_bytes, payload_offset, response, device_busy_delay=0.0, slave_address=None,
+    def write_read(self, tx_bytes,
+                   payload_offset,
+                   response,
+                   device_busy_delay=0.0,
+                   post_processing_delay=None,
+                   slave_address=None,
                    ignore_errors=False) -> Any:
         """
         Implementation of write read.
@@ -38,8 +43,13 @@ class MultiChannel(AbstractMultiChannel):
         Write read needs to be called in a open context (with statement block)
         """
         self._active_channel = next(self._channel_iterator)
-        return self._active_channel.write_read(tx_bytes, payload_offset, response, device_busy_delay,
-                                               slave_address, ignore_errors)
+        return self._active_channel.write_read(tx_bytes=tx_bytes,
+                                               payload_offset=payload_offset,
+                                               response=response,
+                                               device_busy_delay=device_busy_delay,
+                                               post_processing_delay=post_processing_delay,
+                                               slave_address=slave_address,
+                                               ignore_errors=ignore_errors)
 
     def strip_protocol(self, data) -> None:
         self._active_channel.strip_protocol(data)

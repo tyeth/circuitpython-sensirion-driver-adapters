@@ -3,6 +3,7 @@
 
 import logging
 import struct
+import time
 from typing import Any, Iterable, Optional, Tuple
 
 from sensirion_shdlc_driver.errors import ShdlcDeviceError, ShdlcResponseError
@@ -22,7 +23,10 @@ class ShdlcChannel(TxRxChannel):
         self._address = shdlc_address
 
     def write_read(self, tx_bytes: Iterable, payload_offset: int,
-                   response: RxData, device_busy_delay: float = 0.0, slave_address: Optional[int] = None,
+                   response: RxData,
+                   device_busy_delay: float = 0.0,
+                   post_processing_delay: Optional[float] = None,
+                   slave_address: Optional[int] = None,
                    ignore_errors: bool = False) -> Optional[Tuple[Any, ...]]:
         """
         Transfers the data to and from sensor.
@@ -38,6 +42,8 @@ class ShdlcChannel(TxRxChannel):
         :param device_busy_delay:
             Indication how long the receiver of the message will be busy until processing of the data has been
             completed.
+        :post_processing_delay:
+            This is the time one has to wait for until the next communication with the device can take place.
         :param slave_address:
             Used for shdlc address
         :param ignore_errors:
@@ -69,11 +75,15 @@ class ShdlcChannel(TxRxChannel):
             log.warning("SHDLC device with address {} returned error {}."
                         .format(shdlc_address, error_code))
             raise ShdlcDeviceError(error_code)  # Command failed to execute
+        rx_data = None
         if response:
             # The size of strings (and arrays?) is not known before receiving the response. The indications
             # in the rx descriptor are only the upper bounds. Therefore, each field is unpacked individually
             # and the position in the result frame is computed online.
-            return response.unpack_dynamic_sized(rx_data)
+            rx_data = response.unpack_dynamic_sized(rx_data)
+        if post_processing_delay is not None:
+            time.sleep(post_processing_delay)
+        return rx_data
 
     def strip_protocol(self, data) -> None:
         """The protocol is already stripped by the connection"""
