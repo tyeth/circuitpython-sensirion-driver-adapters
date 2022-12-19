@@ -15,7 +15,10 @@ class TxRxChannel(abc.ABC):
 
     @abc.abstractmethod
     def write_read(self, tx_bytes: Iterable, payload_offset: int,
-                   response: RxData, device_busy_delay: float = 0.0, slave_address: Optional[int] = None,
+                   response: RxData,
+                   device_busy_delay: float = 0.0,
+                   post_processing_delay: Optional[float] = None,
+                   slave_address: Optional[int] = None,
                    ignore_errors: bool = False) -> Optional[Tuple[Any, ...]]:
         """
         Transfers the data to and from sensor.
@@ -31,6 +34,8 @@ class TxRxChannel(abc.ABC):
         :param device_busy_delay:
             Indication how long the receiver of the message will be busy until processing of the data has been
             completed.
+        :param post_processing_delay:
+            This is the time one has to wait for until the next communication with the device can take place.
         :param slave_address:
             Used for i2c addressing. Denotes the i2c address of the receiving slave
         :param ignore_errors:
@@ -94,12 +99,14 @@ class TxRxRequest:
                  tx_bytes=None,
                  response=None,
                  device_busy_delay=0.0,
+                 post_processing_time=0.0,
                  receive_length=0) -> None:
         self._channel = channel
         self._response = response
         self._tx_data = tx_bytes
         self._device_busy_delay = device_busy_delay
         self._rx_length = receive_length
+        self._post_processing_time = post_processing_time
 
     @property
     def read_delay(self):
@@ -119,9 +126,13 @@ class TxRxRequest:
 
     @property
     def post_processing_time(self):
+        """This is the time that has to be waited before the next communication with the sensor can take place.
+        """
+        if self._post_processing_time is not None:
+            return self._post_processing_time
         if self._response is None:
             return self.read_delay
-        return 0
+        return 0.0
 
     def interpret_response(self, data):
         raw_data = self._channel.strip_protocol(data)

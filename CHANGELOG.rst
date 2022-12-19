@@ -3,7 +3,7 @@ CHANGELOG
 
 2.1.4
 :::::
-- unreleased
+- Add support for post processing timeout
 
 2.1.3
 :::::
