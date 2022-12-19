@@ -75,7 +75,6 @@ class ShdlcChannel(TxRxChannel):
             log.warning("SHDLC device with address {} returned error {}."
                         .format(shdlc_address, error_code))
             raise ShdlcDeviceError(error_code)  # Command failed to execute
-        rx_data = None
         if response:
             # The size of strings (and arrays?) is not known before receiving the response. The indications
             # in the rx descriptor are only the upper bounds. Therefore, each field is unpacked individually

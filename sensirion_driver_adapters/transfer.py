@@ -45,11 +45,10 @@ class Transfer(abc.ABC):
         return self.tx_data.slave_address
 
     @property
-    def post_processing_time(self) -> Optional[float]:
-        try:
+    def post_processing_delay(self) -> Optional[float]:
+        if hasattr(self.__class__, 'post_processing_time'):
             return getattr(self.__class__, 'post_processing_time')
-        except AttributeError:
-            return None
+        return None
 
     @property
     def tx_data(self) -> Optional[TxData]:
@@ -74,9 +73,13 @@ def execute_transfer(channel: TxRxChannel, *args):
     transfers = list(args)
     for t in transfers[:-1]:
         channel.write_read(t.pack(), t.command_width,
-                           t.rx_data, device_busy_delay=t.device_busy_delay,
+                           t.rx_data,
+                           device_busy_delay=t.device_busy_delay,
+                           post_processing_delay=t.post_processing_delay,
                            slave_address=t.slave_address, ignore_errors=t.ignore_error)
     t = transfers[-1]
     return channel.write_read(t.pack(), t.command_width,
-                              t.rx_data, device_busy_delay=t.device_busy_delay,
+                              t.rx_data,
+                              device_busy_delay=t.device_busy_delay,
+                              post_processing_delay=t.post_processing_delay,
                               slave_address=t.slave_address, ignore_errors=t.ignore_error)
