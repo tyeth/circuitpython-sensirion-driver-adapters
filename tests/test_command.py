@@ -10,7 +10,7 @@ from sensirion_i2c_driver import SensirionI2cCommand
 from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
 from sensirion_driver_adapters.transfer import Transfer, execute_transfer
 from sensirion_driver_adapters.rx_tx_data import TxData, RxData
-from tests.i2c_device_mocks import I2cProgrammerMock
+from sensirion_driver_adapters.mocks.i2c_connection_mock import I2cConnectionMock
 
 
 class ResultProvider:
@@ -144,6 +144,6 @@ def test_command_array_conversion(format, input, expected):
         tx = TxData(cmd_id=0x01, descriptor='>H')
         rx = RxData(descriptor=f'>{format}', convert_to_int=True)
 
-    channel = I2cChannel(I2cProgrammerMock(ResultProvider(input)))
+    channel = I2cChannel(I2cConnectionMock(ResultProvider(input)))
     result, = execute_transfer(channel, TransferWithArrayReturn())
     assert (result == expected)
