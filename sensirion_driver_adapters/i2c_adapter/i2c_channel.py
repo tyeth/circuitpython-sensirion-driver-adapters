@@ -3,6 +3,7 @@
 
 from typing import Any, Iterable, Optional, Tuple
 
+from sensirion_i2c_driver.crc_calculator import CrcCalculator
 from sensirion_i2c_driver.errors import I2cChecksumError
 
 from sensirion_driver_adapters.channel import TxRxChannel, TxRxRequest
@@ -13,7 +14,16 @@ class I2cChannel(TxRxChannel):
     """This is the concrete channel implementation to be used with I2cConnection of the package
     sensirion-i2c-driver"""
 
-    def __init__(self, connection, slave_address=0, crc=None):
+    def __init__(self, connection, slave_address=0, crc=None) -> None:
+        """Initialization of i2c channel.
+
+        :param connection:
+            The i2c connection that is used to communicate with the device.
+        :param slave_address:
+            The i2c slave address of the attached device.
+        :param crc:
+            The CrcCalculator that is used to compute the CRC. If not crc is provided, no checksums will be inserted.
+        """
         self._connection = connection
         self._slave_address = slave_address
         self._crc = crc
@@ -25,8 +35,9 @@ class I2cChannel(TxRxChannel):
                    post_processing_delay: Optional[float] = None,
                    slave_address: Optional[int] = None,
                    ignore_errors: bool = False) -> Optional[Tuple[Any, ...]]:
+        """Implementation of abstract write_read method."""
 
-        tx_bytes = I2cChannel._build_tx_data(tx_bytes, payload_offset, self._crc)
+        tx_bytes = I2cChannel.build_tx_data(tx_bytes, payload_offset, self._crc)
         rx_len = 0
         if response:
             rx_len = 3 * response.rx_length // 2
@@ -66,11 +77,33 @@ class I2cChannel(TxRxChannel):
             return data  # data does not contain CRCs -> return it as-is
 
         data = bytearray(data)  # Python 2 compatibility
+        return self.strip_and_check_crc(data, self._crc)
+
+    @staticmethod
+    def strip_and_check_crc(data: bytearray, crc: CrcCalculator) -> Optional[bytes]:
+        """
+        Strip all crc's from the data
+
+        With the i2c protocol a crc is inserted after every two bytes. This function removes the inserted CRC's and
+        throws an exception if the checksum is not correct.
+
+        :param data:
+            The byte string including crc's.
+
+        :param crc:
+            The crc calculator that is used to compute the CRC
+
+        :return:
+            data without crc checksums.
+
+        :raise ~sensirion_i2c_driver.errors.I2cChecksumError:
+            If a received CRC was wrong.
+        """
         data_without_crc = bytearray()
         for i in range(len(data)):
             if i % 3 == 2:
                 received_crc = data[i]
-                expected_crc = self._crc(data[i - 2:i])
+                expected_crc = crc(data[i - 2:i])
                 if received_crc != expected_crc:
                     raise I2cChecksumError(received_crc, expected_crc, data)
             else:
@@ -78,7 +111,7 @@ class I2cChannel(TxRxChannel):
         return bytes(data_without_crc) if len(data_without_crc) else None
 
     @staticmethod
-    def _build_tx_data(tx_data, cmd_width, crc):
+    def build_tx_data(tx_data, cmd_width, crc):
         """
         Build the raw bytes to send from given command and TX data.
 
