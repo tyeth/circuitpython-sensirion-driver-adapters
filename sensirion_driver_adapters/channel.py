@@ -34,8 +34,10 @@ class TxRxChannel(abc.ABC):
         :param device_busy_delay:
             Indication how long the receiver of the message will be busy until processing of the data has been
             completed.
+            Time unit: seconds
         :param post_processing_delay:
             This is the time one has to wait for until the next communication with the device can take place.
+            Time unit: seconds
         :param slave_address:
             Used for i2c addressing. Denotes the i2c address of the receiving slave
         :param ignore_errors:
