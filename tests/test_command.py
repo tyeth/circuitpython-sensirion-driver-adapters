@@ -7,23 +7,24 @@ import pytest
 from sensirion_i2c_driver import CrcCalculator
 from sensirion_i2c_driver import SensirionI2cCommand
 
+from sensirion_driver_adapters.mocks.response_provider import ResponseProvider
 from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
-from sensirion_driver_adapters.transfer import Transfer, execute_transfer
+from sensirion_driver_adapters.mocks.mock_i2c_channel_provider import MockI2cChannelProvider
 from sensirion_driver_adapters.rx_tx_data import TxData, RxData
-from sensirion_driver_adapters.mocks.i2c_connection_mock import I2cConnectionMock
+from sensirion_driver_adapters.transfer import Transfer, execute_transfer
 
 
-class ResultProvider:
+class ResultProvider(ResponseProvider):
 
     def __init__(self, data_array):
         self._data = data_array
 
-    def write(self, address, data):
-        ...
+    def get_id(self) -> str:
+        """Return an identifier of the response provider"""
+        return 'result-provider'
 
-    def read(self, address, length):
-        data_length = length // 3 * 2
-        return struct.pack(f'>{data_length}B', *self._data)
+    def handle_command(self, cmd_id: int, data: bytes, response_length: int) -> bytes:
+        return struct.pack(f'>{response_length}B', *self._data)
 
 
 class DummyConnection:
@@ -144,6 +145,9 @@ def test_command_array_conversion(format, input, expected):
         tx = TxData(cmd_id=0x01, descriptor='>H')
         rx = RxData(descriptor=f'>{format}', convert_to_int=True)
 
-    channel = I2cChannel(I2cConnectionMock(ResultProvider(input)))
+    with MockI2cChannelProvider(command_width=2,
+                                response_provider=ResultProvider(input)) as provider:
+        channel = provider.get_channel(slave_address=0x24,
+                                       crc_parameters=(8, 0x31, 0xFF, 0x00))
     result, = execute_transfer(channel, TransferWithArrayReturn())
     assert (result == expected)

@@ -4,64 +4,38 @@
 import logging
 import random
 import struct
-from abc import ABC, abstractmethod
+from typing import Optional
 
 from sensirion_i2c_driver.crc_calculator import CrcCalculator
 
+from sensirion_driver_adapters.mocks.response_provider import ResponseProvider
 from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
 
 logger = logging.getLogger(__name__)
 
 
-class ResponseProvider(ABC):
+def random_bytes(data_length: int) -> bytes:
+    """Compute a random data byte array of specified length"""
+    return bytes(random.randint(0, 255) for _ in range(data_length))
 
-    @abstractmethod
-    def get_id(self) -> str:
-        """Return an identifier of the response provider"""
 
-    @abstractmethod
-    def handle_command(self, cmd_id: int, data: bytes, response_length: int) -> bytes:
-        """
-        Provide a hook for sensor specific command handling.
+def random_ascii_string(data_length: int) -> bytes:
+    """Compute a random ascii string data response."""
+    return bytes(random.randint(32, 126) for _ in range(data_length))
 
-        With specific implementation of this class, it becomes possible to emulate any sensor.
 
-        :param cmd_id:
-            Command id of the command to emulate.
-        :param data:
-            The parameters of the command. At this point the data do not contain a crc anymore.
+def padded_ascii_string(string_value: str, nr_of_characters: int) -> bytes:
+    """
+    Pad an ascii-string with 0 to match the expected response length.
 
-        :response_length:
-            The expected length of the returned bytes array.
-
-        : return:
-            An emulated response.
-        """
-
-    @staticmethod
-    def random_bytes(data_length: int) -> bytes:
-        """Compute a random data byte array of specified length"""
-        return bytes(random.randint(0, 255) for i in range(data_length))
-
-    @staticmethod
-    def random_ascii_string(data_length: int) -> bytes:
-        """Compute a random ascii data response."""
-        return bytes(random.randint(32, 126) for i in range(data_length))
-
-    @staticmethod
-    def padded_ascii_string(string_value: str, nr_of_characters: int) -> bytes:
-        """Pad an ascii-string with 0 to match the expected response length
-
-        :params string_value:
-            The string value that needs to be padded.
-
-        :param nr_of_characters:
-            The final length that is required.
-
-        :returns:
-            The prepared string buffer content.
-        """
-        return string_value.encode('ascii') + bytes([0] * (nr_of_characters - len(string_value)))
+    :param string_value:
+        The string value that needs to be padded
+    :param nr_of_characters:
+        The final length that is required
+    :returns:
+        The prepared string buffer content
+    """
+    return string_value.encode('ascii') + bytes([0] * (nr_of_characters - len(string_value)))
 
 
 class RandomResponse(ResponseProvider):
@@ -70,7 +44,7 @@ class RandomResponse(ResponseProvider):
         return "random_default"
 
     def handle_command(self, cmd_id: int, data: bytes, response_length: int) -> bytes:
-        return self.random_bytes(response_length)
+        return random_bytes(response_length)
 
 
 class I2cSensorMock:
@@ -83,36 +57,69 @@ class I2cSensorMock:
     - Provide a hook for returning specific data that can be checked by the receiver
     """
 
-    def __init__(self, i2c_address: int, crc: CrcCalculator, cmd_width: int = 2, id: int = 0) -> None:
-        self._i2c_address = i2c_address
+    def __init__(self,
+                 response_provider: Optional[ResponseProvider],
+                 cmd_width: int = 2,
+                 mock_id: int = 0,
+                 i2c_address: Optional[int] = None,
+                 crc: Optional[CrcCalculator] = None) -> None:
+        """
+        Initialize mock specific arguments.
+
+        :param response_provider:
+            An object that can return sensor specific responses.
+        :param cmd_width:
+            Nr of bytes used by one command_id
+        :param mock_id:
+            An identification to know which mock was used
+        :param i2c_address:
+            i2c address of the mocked sensor; may be initialized by the channel provider
+
+        """
         self._cmd_width = cmd_width
-        self._crc = crc
-        self._id = id
+        self._crc: Optional[CrcCalculator] = crc
+        self.i2c_address: Optional[int] = i2c_address
+        self._id = mock_id
         self._request_queue = []
-        self._response_provider: ResponseProvider = RandomResponse()
+        self._response_provider = response_provider if response_provider is not None else RandomResponse()
+        self._last_command: Optional[int] = None
 
-    def register_response_provider(self, response_provider: ResponseProvider) -> None:
-        self._response_provider = response_provider
+    def update_channel_parameters(self, slave_address,
+                                  crc: Optional[CrcCalculator],
+                                  cmd_width: Optional[int] = None,
+                                  response_provider: Optional[ResponseProvider] = None) -> None:
+        """Allow to switch the channel properties"""
+        self._crc = crc
+        self.i2c_address = slave_address
+        if cmd_width is not None:
+            self._cmd_width = cmd_width
+        if response_provider is not None:
+            self._response_provider = response_provider
 
-    def write(self, address: int, data: bytes) -> None:
-        assert address == self._i2c_address, "unsupported i2c address"
-        # in case we have a wake up command, we may send only one byte of data
+    def write(self, _: int, data: bytes) -> None:
+        # in case we have a wake-up command, we may send only one byte of data
         cmd_len = min(len(data), self._cmd_width)
-        cmd = struct.unpack(self.command_template(cmd_len), data[:cmd_len])[0]
-        data = I2cChannel.strip_and_check_crc(bytearray(data[cmd_len:]), self._crc)
-        self._request_queue.append((cmd, data))
-        logger.info(f'device {self._response_provider.get_id()}-{self._id} received commands {cmd}')
+        self._last_command = struct.unpack(self.command_template(cmd_len), data[:cmd_len])[0]
+        if self._crc is not None:
+            data = I2cChannel.strip_and_check_crc(bytearray(data[cmd_len:]), self._crc)
+        self._request_queue.append((self._last_command, data))
+        logger.info(f'device {self._response_provider.get_id()}-{self._id} received commands {self._last_command}')
 
     def read(self, address, nr_of_bytes_to_return) -> bytes:
-        cmd, data = self._request_queue.pop(0)
+        cmd, data = self._last_command, bytes()
+        if any(self._request_queue):
+            # we may read data without a preceding request!
+            cmd, data = self._request_queue.pop(0)
         if nr_of_bytes_to_return <= 0:
             return bytes()
         nr_of_bytes = 2 * nr_of_bytes_to_return // 3
-        assert address == self._i2c_address, "unsupported i2c address"
+        assert address == self.i2c_address, "unsupported i2c address"
         logger.info(f'device {self._response_provider.get_id()}-{self._id} received'
                     f'read request for {nr_of_bytes} bytes')
 
         rx_data = self._response_provider.handle_command(cmd, data, nr_of_bytes)
+        if self._crc is None:
+            return rx_data
         return I2cChannel.build_tx_data(rx_data, 0, self._crc)
 
     @staticmethod

@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 # (c) Copyright 2021 Sensirion AG, Switzerland
-from typing import Any
-
-from sensirion_i2c_driver.crc_calculator import CrcCalculator
+from typing import Any, Tuple
 
 from sensirion_driver_adapters.channel import TxRxChannel, AbstractMultiChannel
-from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
-from sensirion_driver_adapters.mocks.i2c_connection_mock import I2cConnectionMock
-from sensirion_driver_adapters.mocks.i2c_sensor_mock import I2cSensorMock
+from sensirion_driver_adapters.mocks.mock_i2c_channel_provider import MockI2cChannelProvider
 from sensirion_driver_adapters.multi_channel import MultiChannel
 from sensirion_driver_adapters.rx_tx_data import TxData, RxData
 from sensirion_driver_adapters.transfer import Transfer, execute_transfer
@@ -43,7 +39,9 @@ class DummyDriver:
 
 def create_multi_channel(nr_of_channels: int, i2c_address: int,
                          cmd_width: int,
-                         crc: CrcCalculator) -> AbstractMultiChannel:
-    channels = tuple([I2cChannel(I2cConnectionMock(I2cSensorMock(i2c_address, crc, cmd_width, i)),
-                                 i2c_address, crc) for i in range(nr_of_channels)])
+                         crc: Tuple[int, int, int, int]) -> AbstractMultiChannel:
+    channels = tuple([MockI2cChannelProvider(command_width=cmd_width,
+                                             response_provider=None,
+                                             mock_id=i).get_channel(slave_address=i2c_address, crc_parameters=crc)
+                      for i in range(nr_of_channels)])
     return MultiChannel(channels)
