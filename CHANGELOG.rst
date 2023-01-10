@@ -1,6 +1,11 @@
 CHANGELOG
 ---------
 
+2.1.5
+:::::
+- Make mocks available
+- Add channel provider
+
 2.1.4
 :::::
 - Add support for post processing timeout
