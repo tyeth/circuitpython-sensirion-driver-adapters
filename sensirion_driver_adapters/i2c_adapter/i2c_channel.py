@@ -30,7 +30,7 @@ class I2cChannel(TxRxChannel):
 
     def write_read(self, tx_bytes: Iterable,
                    payload_offset: int,
-                   response: RxData,
+                   response: Optional[RxData],
                    device_busy_delay: float = 0.0,
                    post_processing_delay: Optional[float] = None,
                    slave_address: Optional[int] = None,
@@ -38,7 +38,7 @@ class I2cChannel(TxRxChannel):
         """Implementation of abstract write_read method."""
 
         tx_bytes = I2cChannel.build_tx_data(tx_bytes, payload_offset, self._crc)
-        rx_len = 0
+        rx_len = None
         if response:
             rx_len = 3 * response.rx_length // 2
         tx_rx = TxRxRequest(channel=self, response=response, tx_bytes=tx_bytes,
@@ -54,6 +54,22 @@ class I2cChannel(TxRxChannel):
                 raise error
             result = None
         return result
+
+    def i2c_general_call_reset(self):
+        """
+        Issue a i2c reset by writing the byte 0x6 on the general call address.
+
+        :Note:
+            - all devices attached to this bus will be reset
+            - after the reset, the channel blocks for 50ms to allow the devices to reboot.
+        """
+        self.write_read(tx_bytes=[0x6],
+                        payload_offset=1,
+                        response=None,
+                        slave_address=0,
+                        ignore_errors=True,
+                        post_processing_delay=0.05
+                        )
 
     @property
     def timeout(self):

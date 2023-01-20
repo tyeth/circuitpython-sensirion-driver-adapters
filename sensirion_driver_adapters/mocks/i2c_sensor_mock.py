@@ -44,6 +44,8 @@ class RandomResponse(ResponseProvider):
         return "random_default"
 
     def handle_command(self, cmd_id: int, data: bytes, response_length: int) -> bytes:
+        if response_length <= 0:
+            return bytes()
         return random_bytes(response_length)
 
 
@@ -103,17 +105,18 @@ class I2cSensorMock:
         if self._crc is not None:
             data = I2cChannel.strip_and_check_crc(bytearray(data[cmd_len:]), self._crc)
         self._request_queue.append((self._last_command, data))
-        logger.info(f'device {self._response_provider.get_id()}-{self._id} received commands {self._last_command}')
+        logger.info(f'device {self._response_provider.get_id()}-{self._id} received command {self._last_command}')
 
     def read(self, address, nr_of_bytes_to_return) -> bytes:
         cmd, data = self._last_command, bytes()
         if any(self._request_queue):
             # we may read data without a preceding request!
             cmd, data = self._request_queue.pop(0)
+        assert address == 0 or address == self.i2c_address, "unsupported i2c address"
         if nr_of_bytes_to_return <= 0:
-            return bytes()
+            # we should get a chance to react on commands in the mock even though we do not return data
+            return self._response_provider.handle_command(cmd, data, 0)
         nr_of_bytes = 2 * nr_of_bytes_to_return // 3
-        assert address == self.i2c_address, "unsupported i2c address"
         logger.info(f'device {self._response_provider.get_id()}-{self._id} received'
                     f'read request for {nr_of_bytes} bytes')
 

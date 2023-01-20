@@ -36,7 +36,8 @@ class I2cConnectionMock:
                 time.sleep(tx_rx.read_delay)
         response = None
         # we should always try to read even if the length is 0
-        data = self._connected_sensor.read(address, tx_rx.rx_length)
+        expected_length = tx_rx.rx_length if tx_rx.rx_length is not None else 0
+        data = self._connected_sensor.read(address, expected_length)
         if tx_rx.rx_length > 0:
             response = tx_rx.interpret_response(data)
         if tx_rx.post_processing_time > 0:
