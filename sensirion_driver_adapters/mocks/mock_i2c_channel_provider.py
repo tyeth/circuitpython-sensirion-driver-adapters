@@ -25,7 +25,7 @@ class MockI2cChannelProvider(I2cChannelProvider):
         :param command_width:
             Nr of bytes that are used by the command
         :param response_provider:
-            A class that generates a response for a given command and paramters
+            A class that generates a response for a given command and parameters
         :param mock_id:
             A number that identifies the mock - used in logs.
         """

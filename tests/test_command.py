@@ -151,3 +151,27 @@ def test_command_array_conversion(format, input, expected):
                                        crc_parameters=(8, 0x31, 0xFF, 0x00))
     result, = execute_transfer(channel, TransferWithArrayReturn())
     assert (result == expected)
+
+
+class HandleResetAddress(ResponseProvider):
+    def __init__(self):
+        self.is_called = 0
+
+    def get_id(self) -> str:
+        return "general-call-reset"
+
+    def handle_command(self, cmd_id: int, data: bytes, response_length: int) -> bytes:
+        assert cmd_id == 0x6
+        self.is_called += 1
+        return bytes()
+
+
+def test_general_call_reset_no_hw():
+
+    reset_mock = HandleResetAddress()
+    provider = MockI2cChannelProvider(command_width=2, response_provider=reset_mock)
+    channel = provider.get_channel(slave_address=0x24,
+                                   crc_parameters=(8, 0x31, 0xFF, 0x00))
+    assert isinstance(channel, I2cChannel)
+    channel.i2c_general_call_reset()
+    assert reset_mock.is_called > 0
