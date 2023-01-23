@@ -1,52 +1,16 @@
 # -*- coding: utf-8 -*-
-# (c) Copyright 2021 Sensirion AG, Switzerland
+# (c) Copyright 2023 Sensirion AG, Switzerland
 
 import logging
-import random
 import struct
 from typing import Optional
 
 from sensirion_i2c_driver.crc_calculator import CrcCalculator
 
-from sensirion_driver_adapters.mocks.response_provider import ResponseProvider
 from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
+from sensirion_driver_adapters.mocks.response_provider import ResponseProvider, RandomResponse
 
 logger = logging.getLogger(__name__)
-
-
-def random_bytes(data_length: int) -> bytes:
-    """Compute a random data byte array of specified length"""
-    return bytes(random.randint(0, 255) for _ in range(data_length))
-
-
-def random_ascii_string(data_length: int) -> bytes:
-    """Compute a random ascii string data response."""
-    return bytes(random.randint(32, 126) for _ in range(data_length))
-
-
-def padded_ascii_string(string_value: str, nr_of_characters: int) -> bytes:
-    """
-    Pad an ascii-string with 0 to match the expected response length.
-
-    :param string_value:
-        The string value that needs to be padded
-    :param nr_of_characters:
-        The final length that is required
-    :returns:
-        The prepared string buffer content
-    """
-    return string_value.encode('ascii') + bytes([0] * (nr_of_characters - len(string_value)))
-
-
-class RandomResponse(ResponseProvider):
-
-    def get_id(self) -> str:
-        return "random_default"
-
-    def handle_command(self, cmd_id: int, data: bytes, response_length: int) -> bytes:
-        if response_length <= 0:
-            return bytes()
-        return random_bytes(response_length)
 
 
 class I2cSensorMock:

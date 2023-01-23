@@ -16,7 +16,7 @@ def test_invoke_general_call_reset_with_hw():
     The sensor bridge reports an error when sending command 6 to slave address 0.
     """
 
-    channel_provider = SensorBridgeI2cChannelProvider(SensorBridgePort.ONE, "COM5", serial_baud_rate=460800)
+    channel_provider = SensorBridgeI2cChannelProvider(SensorBridgePort.ONE, "COM12", serial_baud_rate=460800)
     channel_provider.supply_voltage = 5.0
     channel_provider.i2c_frequency = 50e3
     with channel_provider:
