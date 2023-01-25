@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # (c) Copyright 2021 Sensirion AG, Switzerland
-
+import abc
 import logging
 import struct
 import time
-from typing import Any, Iterable, Optional, Tuple
+from typing import Any, Iterable, Optional, Tuple, Union
 
 from sensirion_shdlc_driver.errors import ShdlcDeviceError, ShdlcResponseError
 from sensirion_shdlc_driver.port import ShdlcPort
@@ -15,10 +15,52 @@ from sensirion_driver_adapters.rx_tx_data import RxData
 log = logging.getLogger(__name__)
 
 
+class ShdlcTransceiver(abc.ABC):
+    """Base class for any shdlc transceiver"""
+
+    def transceive(self, slave_address,
+                   command_id,
+                   data,
+                   response_timeout) -> Tuple[int, int, int, bytes]:
+        """Call underlying transceive
+
+        :param slave_address:
+            shdlc slave_address
+        :param command_id:
+            SHDLC command that is sent
+        :param data:
+            the payload that is sent, this includes the subcommand.
+        :param response_timeout:
+            maximal time the roundtrip is allowed to take
+        """
+
+    def set_expected_length(self, response: Optional[RxData]) -> None:
+        """
+        Allows to compute the expected length.
+        """
+
+
+class ShdlcPortWrapper(ShdlcTransceiver):
+    def __init__(self, port: ShdlcPort):
+        self._port = port
+
+    def transceive(self, slave_address, command_id, data, response_timeout) -> Tuple[int, int, int, bytes]:
+        return self._port.transceive(slave_address=slave_address,
+                                     command_id=command_id,
+                                     data=data,
+                                     response_timeout=response_timeout)
+
+    def set_expected_length(self, _: Optional[RxData]) -> None:
+        ...
+
+
 class ShdlcChannel(TxRxChannel):
 
-    def __init__(self, shdlc_port: ShdlcPort, channel_delay: float = 0.05, shdlc_address: int = 0) -> None:
-        self._port = shdlc_port
+    def __init__(self, transceiver: Union[ShdlcTransceiver, ShdlcPort],
+                 channel_delay: float = 0.05, shdlc_address: int = 0) -> None:
+
+        # needed for backwards compatibility
+        self._port: ShdlcTransceiver = self._make_transceiver(transceiver)
         self._channel_delay = channel_delay
         self._address = shdlc_address
 
@@ -42,7 +84,7 @@ class ShdlcChannel(TxRxChannel):
         :param device_busy_delay:
             Indication how long the receiver of the message will be busy until processing of the data has been
             completed.
-        :post_processing_delay:
+        :param post_processing_delay:
             This is the time one has to wait for until the next communication with the device can take place.
         :param slave_address:
             Used for shdlc address
@@ -56,6 +98,7 @@ class ShdlcChannel(TxRxChannel):
         cmd_id = struct.unpack('>B', tx_bytes[0:payload_offset])[0]
         data = tx_bytes[payload_offset:]
         timeout = max(self._channel_delay, device_busy_delay)
+        self._port.set_expected_length(response)
         rx_addr, rx_cmd, rx_state, rx_data = self._port.transceive(slave_address=shdlc_address,
                                                                    command_id=cmd_id,
                                                                    data=data,
@@ -91,3 +134,9 @@ class ShdlcChannel(TxRxChannel):
     @property
     def timeout(self) -> float:
         return self._channel_delay
+
+    @staticmethod
+    def _make_transceiver(transceiver: Union[ShdlcTransceiver, ShdlcPort]) -> ShdlcTransceiver:
+        if isinstance(transceiver, ShdlcTransceiver):
+            return transceiver
+        return ShdlcPortWrapper(transceiver)

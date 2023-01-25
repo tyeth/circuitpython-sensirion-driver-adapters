@@ -42,12 +42,14 @@ class MockI2cChannelProvider(I2cChannelProvider):
         ...
 
     def get_channel(self, slave_address: int,
-                    crc_parameters: Optional[Tuple[int, int, int, int]]) -> TxRxChannel:
+                    crc_parameters: Optional[Tuple[int, int, int, int]],
+                    response_provider: Optional[ResponseProvider] = None) -> TxRxChannel:
         """Return the initialized channel."""
 
         crc = self.try_create_crc_calculator(crc_parameters)
         self._sensor_mock.update_channel_parameters(slave_address=slave_address,
-                                                    crc=crc)
+                                                    crc=crc,
+                                                    response_provider=response_provider)
         connection_mock = I2cConnectionMock(self._sensor_mock)
         return I2cChannel(connection=connection_mock,
                           slave_address=slave_address,
