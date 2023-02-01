@@ -5,6 +5,7 @@ CHANGELOG
 :::::
 - Make mocks available
 - Add channel provider
+- Provide i2c_general_call_reset
 
 2.1.4
 :::::
