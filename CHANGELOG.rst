@@ -1,7 +1,6 @@
 CHANGELOG
 ---------
-
-2.1.5
+2.1.8
 :::::
 - Make mocks available
 - Add channel provider
