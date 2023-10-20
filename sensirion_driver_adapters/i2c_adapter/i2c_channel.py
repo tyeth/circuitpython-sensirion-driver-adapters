@@ -22,7 +22,7 @@ class I2cChannel(TxRxChannel):
         :param slave_address:
             The i2c slave address of the attached device.
         :param crc:
-            The CrcCalculator that is used to compute the CRC. If not crc is provided, no checksums will be inserted.
+            The CrcCalculator that is used to compute the CRC. If crc is not provided, no checksums will be inserted.
         """
         self._connection = connection
         self._slave_address = slave_address
@@ -40,7 +40,10 @@ class I2cChannel(TxRxChannel):
         tx_bytes = I2cChannel.build_tx_data(tx_bytes, payload_offset, self._crc)
         rx_len = None
         if response:
-            rx_len = 3 * response.rx_length // 2
+            rx_len = response.rx_length
+            if self._crc:
+                rx_len = 3 * rx_len // 2
+
         tx_rx = TxRxRequest(channel=self, response=response, tx_bytes=tx_bytes,
                             device_busy_delay=device_busy_delay,
                             post_processing_time=post_processing_delay,
