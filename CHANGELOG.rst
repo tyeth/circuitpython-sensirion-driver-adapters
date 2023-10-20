@@ -1,5 +1,10 @@
 CHANGELOG
 ---------
+
+unreleased
+::::::::::
+- fix usage of I2cChannel without CRC
+
 2.1.8
 :::::
 - Make mocks available
