@@ -1,8 +1,8 @@
 CHANGELOG
 ---------
 
-unreleased
-::::::::::
+2.1.9
+:::::
 - fix usage of I2cChannel without CRC
 
 2.1.8
