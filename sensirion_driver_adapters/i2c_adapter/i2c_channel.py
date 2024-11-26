@@ -6,8 +6,8 @@ from typing import Any, Iterable, Optional, Tuple
 from sensirion_i2c_driver.crc_calculator import CrcCalculator
 from sensirion_i2c_driver.errors import I2cChecksumError
 
-from sensirion_driver_adapters.channel import TxRxChannel, TxRxRequest
-from sensirion_driver_adapters.rx_tx_data import RxData
+from circuitpython_sensirion_driver_adapters.channel import TxRxChannel, TxRxRequest
+from circuitpython_sensirion_driver_adapters.rx_tx_data import RxData
 
 
 class I2cChannel(TxRxChannel):

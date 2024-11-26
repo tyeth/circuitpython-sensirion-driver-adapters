@@ -10,9 +10,9 @@ from sensirion_shdlc_sensorbridge import (SensorBridgePort,
                                           SensorBridgeShdlcDevice,
                                           SensorBridgeI2cProxy)
 
-from sensirion_driver_adapters.channel import TxRxChannel
-from sensirion_driver_adapters.channel_provider import I2cChannelProvider
-from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
+from circuitpython_sensirion_driver_adapters.channel import TxRxChannel
+from circuitpython_sensirion_driver_adapters.channel_provider import I2cChannelProvider
+from circuitpython_sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
 
 
 class SensorBridgeI2cChannelProvider(I2cChannelProvider):

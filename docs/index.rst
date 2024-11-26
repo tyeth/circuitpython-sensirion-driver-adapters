@@ -1,7 +1,7 @@
-Welcome to sensirion-i2c-adapter's documentation!
+Welcome to circuitpython-sensirion-driver-adapter's documentation!
 ====================================================
 
-This is the documentation for sensirion-i2c-adapter.
+This is the documentation for circuitpython-sensirion-driver-adapters.
 
 Contents
 --------

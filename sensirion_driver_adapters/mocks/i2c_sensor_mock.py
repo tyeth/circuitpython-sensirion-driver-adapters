@@ -7,8 +7,8 @@ from typing import Optional
 
 from sensirion_i2c_driver.crc_calculator import CrcCalculator
 
-from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
-from sensirion_driver_adapters.mocks.response_provider import ResponseProvider, RandomResponse
+from circuitpython_sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
+from circuitpython_sensirion_driver_adapters.mocks.response_provider import ResponseProvider, RandomResponse
 
 logger = logging.getLogger(__name__)
 

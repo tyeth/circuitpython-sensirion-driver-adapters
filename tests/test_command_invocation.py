@@ -8,10 +8,10 @@ from sensirion_shdlc_driver import ShdlcSerialPort, ShdlcConnection
 from sensirion_shdlc_sensorbridge import SensorBridgePort, \
     SensorBridgeShdlcDevice, SensorBridgeI2cProxy
 
-from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
-from sensirion_driver_adapters.transfer import Transfer, execute_transfer
+from circuitpython_sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
+from circuitpython_sensirion_driver_adapters.transfer import Transfer, execute_transfer
 from sensirion_i2c_driver import I2cConnection, CrcCalculator
-from sensirion_driver_adapters.rx_tx_data import TxData, RxData
+from circuitpython_sensirion_driver_adapters.rx_tx_data import TxData, RxData
 
 
 class StartO2Measurement(Transfer):

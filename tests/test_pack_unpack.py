@@ -6,7 +6,7 @@ from typing import Iterable
 
 import pytest
 
-from sensirion_driver_adapters.rx_tx_data import RxData, TxData
+from circuitpython_sensirion_driver_adapters.rx_tx_data import RxData, TxData
 
 
 @pytest.mark.parametrize("tx, data", [

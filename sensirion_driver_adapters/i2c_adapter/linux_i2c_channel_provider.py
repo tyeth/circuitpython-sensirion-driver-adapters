@@ -6,9 +6,9 @@ from typing import Optional, Tuple
 
 from sensirion_i2c_driver import LinuxI2cTransceiver, I2cConnection
 
-from sensirion_driver_adapters.channel import TxRxChannel
-from sensirion_driver_adapters.channel_provider import I2cChannelProvider
-from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
+from circuitpython_sensirion_driver_adapters.channel import TxRxChannel
+from circuitpython_sensirion_driver_adapters.channel_provider import I2cChannelProvider
+from circuitpython_sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
 
 
 class LinuxI2cChannelProvider(I2cChannelProvider):

@@ -5,8 +5,8 @@ import time
 import pytest
 from sensirion_shdlc_sensorbridge import (SensorBridgePort)
 
-from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
-from sensirion_driver_adapters.i2c_adapter.sensor_bridge_i2c_channel_provider import SensorBridgeI2cChannelProvider
+from circuitpython_sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
+from circuitpython_sensirion_driver_adapters.i2c_adapter.sensor_bridge_i2c_channel_provider import SensorBridgeI2cChannelProvider
 
 
 @pytest.mark.needs_hardware

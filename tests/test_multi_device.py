@@ -2,7 +2,7 @@
 # (c) Copyright 2021 Sensirion AG, Switzerland
 
 import i2c_device_mocks as mocks
-from sensirion_driver_adapters.multi_device_support import multi_driver
+from circuitpython_sensirion_driver_adapters.multi_device_support import multi_driver
 
 
 @multi_driver(mocks.DummyDriver)

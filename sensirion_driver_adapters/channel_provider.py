@@ -6,8 +6,8 @@ from typing import Optional, Tuple
 
 from sensirion_i2c_driver import CrcCalculator
 
-from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
-from sensirion_driver_adapters.shdlc_adapter.shdlc_channel import ShdlcChannel
+from circuitpython_sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
+from circuitpython_sensirion_driver_adapters.shdlc_adapter.shdlc_channel import ShdlcChannel
 
 
 class ChannelProvider(abc.ABC):

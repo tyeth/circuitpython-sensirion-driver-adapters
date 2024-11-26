@@ -7,11 +7,11 @@ import pytest
 from sensirion_i2c_driver import CrcCalculator
 from sensirion_i2c_driver import SensirionI2cCommand
 
-from sensirion_driver_adapters.mocks.response_provider import ResponseProvider
-from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
-from sensirion_driver_adapters.mocks.mock_i2c_channel_provider import MockI2cChannelProvider
-from sensirion_driver_adapters.rx_tx_data import TxData, RxData
-from sensirion_driver_adapters.transfer import Transfer, execute_transfer
+from circuitpython_sensirion_driver_adapters.mocks.response_provider import ResponseProvider
+from circuitpython_sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
+from circuitpython_sensirion_driver_adapters.mocks.mock_i2c_channel_provider import MockI2cChannelProvider
+from circuitpython_sensirion_driver_adapters.rx_tx_data import TxData, RxData
+from circuitpython_sensirion_driver_adapters.transfer import Transfer, execute_transfer
 
 
 class ResultProvider(ResponseProvider):

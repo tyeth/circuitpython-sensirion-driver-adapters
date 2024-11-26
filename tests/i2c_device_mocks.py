@@ -2,11 +2,11 @@
 # (c) Copyright 2021 Sensirion AG, Switzerland
 from typing import Any, Tuple
 
-from sensirion_driver_adapters.channel import TxRxChannel, AbstractMultiChannel
-from sensirion_driver_adapters.mocks.mock_i2c_channel_provider import MockI2cChannelProvider
-from sensirion_driver_adapters.multi_channel import MultiChannel
-from sensirion_driver_adapters.rx_tx_data import TxData, RxData
-from sensirion_driver_adapters.transfer import Transfer, execute_transfer
+from circuitpython_sensirion_driver_adapters.channel import TxRxChannel, AbstractMultiChannel
+from circuitpython_sensirion_driver_adapters.mocks.mock_i2c_channel_provider import MockI2cChannelProvider
+from circuitpython_sensirion_driver_adapters.multi_channel import MultiChannel
+from circuitpython_sensirion_driver_adapters.rx_tx_data import TxData, RxData
+from circuitpython_sensirion_driver_adapters.transfer import Transfer, execute_transfer
 
 
 class MeasureRawSignals(Transfer):

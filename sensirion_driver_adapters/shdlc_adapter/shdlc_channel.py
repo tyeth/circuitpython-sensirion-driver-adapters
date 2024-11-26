@@ -9,8 +9,8 @@ from typing import Any, Iterable, Optional, Tuple, Union
 from sensirion_shdlc_driver.errors import ShdlcDeviceError, ShdlcResponseError
 from sensirion_shdlc_driver.port import ShdlcPort
 
-from sensirion_driver_adapters.channel import TxRxChannel
-from sensirion_driver_adapters.rx_tx_data import RxData
+from circuitpython_sensirion_driver_adapters.channel import TxRxChannel
+from circuitpython_sensirion_driver_adapters.rx_tx_data import RxData
 
 log = logging.getLogger(__name__)
 

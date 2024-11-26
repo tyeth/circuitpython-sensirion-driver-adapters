@@ -55,7 +55,7 @@ deploy_stable:
   extends: .deploy_stable_v2
   environment:
     name: pypi.org
-    url: https://pypi.org/project/sensirion-i2c-adapters/
+    url: https://pypi.org/project/circuitpython-sensirion-i2c-adapters/
   before_script:
     - pip install twine~=1.12.1
   script:

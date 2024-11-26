@@ -5,7 +5,7 @@ Install
 -------
 .. sourcecode:: bash
 
-    pip install sensirion-driver-adapters
+    pip install circuitpython-sensirion-driver-adapters
 
 Recommended usage is within a virtualenv.
 
@@ -13,4 +13,4 @@ Usage
 -----
 .. sourcecode:: python
 
-    import sensirion_driver_adapters
+    import circuitpython_sensirion_driver_adapters

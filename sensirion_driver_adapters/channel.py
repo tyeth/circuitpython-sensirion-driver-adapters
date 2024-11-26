@@ -4,7 +4,7 @@
 import abc
 from typing import Any, Iterable, Optional, Tuple
 
-from sensirion_driver_adapters.rx_tx_data import RxData
+from circuitpython_sensirion_driver_adapters.rx_tx_data import RxData
 
 
 class TxRxChannel(abc.ABC):
