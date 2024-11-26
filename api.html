@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API Documentation &mdash; sensirion-i2c-adapter  documentation</title>
+  <title>API Documentation &mdash; circuitpython-sensirion-driver-adapters  documentation</title>
   
 
   
@@ -33,10 +33,9 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/banner.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Welcome to sensirion-i2c-adapter’s documentation!" href="index.html" /> 
+    <link rel="prev" title="Welcome to circuitpython-sensirion-driver-adapter’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -50,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sensirion-i2c-adapter
+            <a href="index.html" class="icon icon-home"> circuitpython-sensirion-driver-adapters
           
 
           
@@ -60,7 +59,7 @@
             
             
               <div class="version">
-                1.0.1
+                2.1.10
               </div>
             
           
@@ -86,9 +85,10 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-sensirion_i2c_adapter.channel">Channel:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-sensirion_i2c_adapter.i2c_channel">I2C-Channel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-sensirion_i2c_adapter.transfer">Transfer:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#channel">Channel:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i2c-channel">I2C-Channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transfer">Transfer:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multi-device-support">Multi-Device Support:</a></li>
 </ul>
 </li>
 </ul>
@@ -105,7 +105,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sensirion-i2c-adapter</a>
+          <a href="index.html">circuitpython-sensirion-driver-adapters</a>
         
       </nav>
 
@@ -157,141 +157,19 @@
             
   <div class="section" id="api-documentation">
 <h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-sensirion_i2c_adapter.channel">
-<span id="channel"></span><h2>Channel:<a class="headerlink" href="#module-sensirion_i2c_adapter.channel" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="sensirion_i2c_adapter.channel.TxRxChannel">
-<em class="property">class </em><code class="descclassname">sensirion_i2c_adapter.channel.</code><code class="descname">TxRxChannel</code><a class="headerlink" href="#sensirion_i2c_adapter.channel.TxRxChannel" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the abstract base class for any channel. A channel is a transportation medium to transfer data from any
-source to any destination</p>
-<dl class="method">
-<dt id="sensirion_i2c_adapter.channel.TxRxChannel.write_read">
-<code class="descname">write_read</code><span class="sig-paren">(</span><em>tx_bytes</em>, <em>payload_offset</em>, <em>response</em>, <em>device_busy_delay=0.0</em>, <em>slave_address=None</em>, <em>ignore_errors=False</em><span class="sig-paren">)</span><a class="headerlink" href="#sensirion_i2c_adapter.channel.TxRxChannel.write_read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transfers the data to and from sensor.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>tx_bytes</strong> – Raw bytes to be transmitted</li>
-<li><strong>payload_offset</strong> – The data my contain a header that needs to be left untouched, pushing the date through the protocol stack.
-The Payload offset points to the end of the header and the beginning of the data</li>
-<li><strong>response</strong> – The response is an object that is able to unpack a raw response.
-It has to provide a method ‘interpret_response.</li>
-<li><strong>device_busy_delay</strong> – Indication how long the receiver of the message will be busy until processing of the data has been
-completed.</li>
-<li><strong>slave_address</strong> – Used for i2c addressing. Denotes the i2c address of the receiving slave</li>
-<li><strong>ignore_errors</strong> – Some transfers may generate an exception even when they execute properly. In these situations the exception
-is swallowed and an empty result is returned</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Return a tuple of the interpreted data or None if there is no response at all</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="sensirion_i2c_adapter.channel.TxRxRequest">
-<em class="property">class </em><code class="descclassname">sensirion_i2c_adapter.channel.</code><code class="descname">TxRxRequest</code><span class="sig-paren">(</span><em>channel</em>, <em>tx_bytes=None</em>, <em>response=None</em>, <em>device_busy_delay=0.0</em>, <em>receive_length=0</em><span class="sig-paren">)</span><a class="headerlink" href="#sensirion_i2c_adapter.channel.TxRxRequest" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class is an adapter to the class I2cConnection. It keeps compatibility with the SensirionI2cCommand</p>
-</dd></dl>
-
+<div class="section" id="channel">
+<h2>Channel:<a class="headerlink" href="#channel" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-sensirion_i2c_adapter.i2c_channel">
-<span id="i2c-channel"></span><h2>I2C-Channel<a class="headerlink" href="#module-sensirion_i2c_adapter.i2c_channel" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="sensirion_i2c_adapter.i2c_channel.I2cChannel">
-<em class="property">class </em><code class="descclassname">sensirion_i2c_adapter.i2c_channel.</code><code class="descname">I2cChannel</code><span class="sig-paren">(</span><em>connection</em>, <em>slave_address=0</em>, <em>crc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#sensirion_i2c_adapter.i2c_channel.I2cChannel" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the concrete channel implementation to be used with I2cConnection of the package
-sensirion-i2c-driver</p>
-<dl class="method">
-<dt id="sensirion_i2c_adapter.i2c_channel.I2cChannel.strip_protocol">
-<code class="descname">strip_protocol</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#sensirion_i2c_adapter.i2c_channel.I2cChannel.strip_protocol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validates the CRCs of the received data from the device and returns
-the data with all CRCs removed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) – Received raw bytes from the read operation.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The received bytes without crc, or None if there is no data received.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bytes or None</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>I2cChecksumError</strong> – If a received CRC was wrong.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="sensirion_i2c_adapter.i2c_channel.I2cChannel.write_read">
-<code class="descname">write_read</code><span class="sig-paren">(</span><em>tx_bytes</em>, <em>payload_offset</em>, <em>response</em>, <em>device_busy_delay=0.0</em>, <em>slave_address=None</em>, <em>ignore_errors=False</em><span class="sig-paren">)</span><a class="headerlink" href="#sensirion_i2c_adapter.i2c_channel.I2cChannel.write_read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transfers the data to and from sensor.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>tx_bytes</strong> – Raw bytes to be transmitted</li>
-<li><strong>payload_offset</strong> – The data my contain a header that needs to be left untouched, pushing the date through the protocol stack.
-The Payload offset points to the end of the header and the beginning of the data</li>
-<li><strong>response</strong> – The response is an object that is able to unpack a raw response.
-It has to provide a method ‘interpret_response.</li>
-<li><strong>device_busy_delay</strong> – Indication how long the receiver of the message will be busy until processing of the data has been
-completed.</li>
-<li><strong>slave_address</strong> – Used for i2c addressing. Denotes the i2c address of the receiving slave</li>
-<li><strong>ignore_errors</strong> – Some transfers may generate an exception even when they execute properly. In these situations the exception
-is swallowed and an empty result is returned</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Return a tuple of the interpreted data or None if there is no response at all</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="i2c-channel">
+<h2>I2C-Channel<a class="headerlink" href="#i2c-channel" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-sensirion_i2c_adapter.transfer">
-<span id="transfer"></span><h2>Transfer:<a class="headerlink" href="#module-sensirion_i2c_adapter.transfer" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="sensirion_i2c_adapter.transfer.RxData">
-<em class="property">class </em><code class="descclassname">sensirion_i2c_adapter.transfer.</code><code class="descname">RxData</code><span class="sig-paren">(</span><em>descriptor=None</em><span class="sig-paren">)</span><a class="headerlink" href="#sensirion_i2c_adapter.transfer.RxData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Descriptor for data to be received</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="sensirion_i2c_adapter.transfer.Transfer">
-<em class="property">class </em><code class="descclassname">sensirion_i2c_adapter.transfer.</code><code class="descname">Transfer</code><a class="headerlink" href="#sensirion_i2c_adapter.transfer.Transfer" title="Permalink to this definition">¶</a></dt>
-<dd><p>A transfer abstracts the data that is exchanged between host and sensor</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="sensirion_i2c_adapter.transfer.TxData">
-<em class="property">class </em><code class="descclassname">sensirion_i2c_adapter.transfer.</code><code class="descname">TxData</code><span class="sig-paren">(</span><em>cmd_id</em>, <em>descriptor</em>, <em>device_busy_delay=0.0</em>, <em>slave_address=None</em>, <em>ignore_ack=False</em><span class="sig-paren">)</span><a class="headerlink" href="#sensirion_i2c_adapter.transfer.TxData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Models the tx data that is exchanged. It it primarily a descriptor that knows how to convert structured
-data into a list of raw bytes</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sensirion_i2c_adapter.transfer.execute_transfer">
-<code class="descclassname">sensirion_i2c_adapter.transfer.</code><code class="descname">execute_transfer</code><span class="sig-paren">(</span><em>channel: sensirion_i2c_adapter.channel.TxRxChannel</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#sensirion_i2c_adapter.transfer.execute_transfer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executes a transfer consisting of one or more Transfer objects.
-:param channel: The channel that is used to transfer the data
-:param args: a variable list of transfers to be transmitted
-:return: a tuple of data if the last transfer has a response</p>
-</dd></dl>
-
+<div class="section" id="transfer">
+<h2>Transfer:<a class="headerlink" href="#transfer" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="multi-device-support">
+<h2>Multi-Device Support:<a class="headerlink" href="#multi-device-support" title="Permalink to this headline">¶</a></h2>
+<p>Multi-channel SensorBridge:
+.. automodule:: sensirion_i2c_adapter.multi_sensor_bridge</p>
 </div>
 </div>
 
@@ -304,7 +182,7 @@ data into a list of raw bytes</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to sensirion-i2c-adapter’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to circuitpython-sensirion-driver-adapter’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -313,7 +191,7 @@ data into a list of raw bytes</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2021 Sensirion AG, Switzerland
+        &copy; Copyright 2024 Sensirion AG, Switzerland
 
     </p>
   </div>
@@ -328,19 +206,6 @@ data into a list of raw bytes</p>
 
   </div>
   
-<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-        <span class="fa fa-book"> Other Versions</span>
-        v: master
-        <span class="fa fa-caret-down"></span>
-    </span>
-    <div class="rst-other-versions">
-        <dl>
-            <dt>Branches</dt>
-            <dd><a href="master/api.html">master</a></dd>
-        </dl>
-    </div>
-</div>
 
 
   <script type="text/javascript">
