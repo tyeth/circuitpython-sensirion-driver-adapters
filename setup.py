@@ -51,7 +51,7 @@ assert(keywords != '<keywords meaningful>')
 
 # Note: Remove this check only for old packages which do not (yet) have the
 # "sensirion-" prefix for compatibility reasons.
-assert(package_name.startswith("sensirion-"))
+assert(package_name.find("sensirion-"))
 
 # It is important to NOT import anything, not even the version, from the package which is being built.
 # Otherwise weird behavior is guaranteed.

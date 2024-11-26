@@ -8,7 +8,7 @@ The classes can be used as adapters to the *sensirion_i2c_driver.I2cConnection* 
 
 The python package circuitpython-sensirion-driver-adapters replaces the package sensirion-i2c-adapter. The latter is deprecated and
 will no longer be maintained. All functionality of sensirion-i2c-adapter is contained within the package
-sensirion-driver-adapters.
+circuitpython-sensirion-driver-adapters.
 
 ## Usage
 
