@@ -3,7 +3,7 @@
 
 from typing import Tuple, Optional, Iterator, Any
 
-from sensirion_driver_adapters.channel import TxRxChannel, AbstractMultiChannel
+from circuitpython_sensirion_driver_adapters.channel import TxRxChannel, AbstractMultiChannel
 
 
 class MultiChannel(AbstractMultiChannel):

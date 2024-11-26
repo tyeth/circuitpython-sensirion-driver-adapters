@@ -12,9 +12,9 @@ from sensirion_shdlc_sensorbridge import (SensorBridgePort,
                                           SensorBridgeShdlcDevice,
                                           SensorBridgeI2cProxy)
 
-from sensirion_driver_adapters.channel import AbstractMultiChannel
-from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
-from sensirion_driver_adapters.multi_channel import MultiChannel
+from circuitpython_sensirion_driver_adapters.channel import AbstractMultiChannel
+from circuitpython_sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
+from circuitpython_sensirion_driver_adapters.multi_channel import MultiChannel
 
 
 class UsedPorts(IntFlag):

@@ -3,10 +3,10 @@
 
 from typing import Tuple, Optional
 
-from sensirion_driver_adapters.mocks.response_provider import (ResponseProvider,
+from circuitpython_sensirion_driver_adapters.mocks.response_provider import (ResponseProvider,
                                                                RandomResponse)
-from sensirion_driver_adapters.rx_tx_data import RxData
-from sensirion_driver_adapters.shdlc_adapter.shdlc_channel import ShdlcTransceiver
+from circuitpython_sensirion_driver_adapters.rx_tx_data import RxData
+from circuitpython_sensirion_driver_adapters.shdlc_adapter.shdlc_channel import ShdlcTransceiver
 
 
 class ShdlcTransceiverMock(ShdlcTransceiver):

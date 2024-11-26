@@ -5,8 +5,8 @@ from typing import Optional
 
 from sensirion_shdlc_driver.port import ShdlcSerialPort
 
-from sensirion_driver_adapters.channel_provider import ShdlcChannelProvider
-from sensirion_driver_adapters.shdlc_adapter.shdlc_channel import ShdlcPortWrapper, ShdlcChannel
+from circuitpython_sensirion_driver_adapters.channel_provider import ShdlcChannelProvider
+from circuitpython_sensirion_driver_adapters.shdlc_adapter.shdlc_channel import ShdlcPortWrapper, ShdlcChannel
 
 
 class ShdlcSerialPortChannelProvider(ShdlcChannelProvider):

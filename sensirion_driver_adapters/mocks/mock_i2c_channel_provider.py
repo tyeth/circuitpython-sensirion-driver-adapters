@@ -3,12 +3,12 @@
 
 from typing import Optional, Tuple
 
-from sensirion_driver_adapters.channel import TxRxChannel
-from sensirion_driver_adapters.mocks.response_provider import ResponseProvider
-from sensirion_driver_adapters.channel_provider import I2cChannelProvider
-from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
-from sensirion_driver_adapters.mocks.i2c_connection_mock import I2cConnectionMock
-from sensirion_driver_adapters.mocks.i2c_sensor_mock import I2cSensorMock
+from circuitpython_sensirion_driver_adapters.channel import TxRxChannel
+from circuitpython_sensirion_driver_adapters.mocks.response_provider import ResponseProvider
+from circuitpython_sensirion_driver_adapters.channel_provider import I2cChannelProvider
+from circuitpython_sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
+from circuitpython_sensirion_driver_adapters.mocks.i2c_connection_mock import I2cConnectionMock
+from circuitpython_sensirion_driver_adapters.mocks.i2c_sensor_mock import I2cSensorMock
 
 
 class MockI2cChannelProvider(I2cChannelProvider):

@@ -5,8 +5,8 @@ from __future__ import absolute_import, division, print_function
 import abc
 from typing import Optional
 
-from sensirion_driver_adapters.channel import TxRxChannel
-from sensirion_driver_adapters.rx_tx_data import RxData, TxData
+from circuitpython_sensirion_driver_adapters.channel import TxRxChannel
+from circuitpython_sensirion_driver_adapters.rx_tx_data import RxData, TxData
 
 
 class Transfer(abc.ABC):

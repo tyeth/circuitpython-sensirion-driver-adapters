@@ -5,8 +5,8 @@ import logging
 import time
 from typing import Optional, Tuple, Any
 
-from sensirion_driver_adapters.channel import TxRxRequest
-from sensirion_driver_adapters.mocks.i2c_sensor_mock import I2cSensorMock
+from circuitpython_sensirion_driver_adapters.channel import TxRxRequest
+from circuitpython_sensirion_driver_adapters.mocks.i2c_sensor_mock import I2cSensorMock
 
 connection_logger = logging.getLogger(__name__)
 

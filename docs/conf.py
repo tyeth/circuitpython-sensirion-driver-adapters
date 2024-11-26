@@ -14,7 +14,7 @@ import pkg_resources
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # -- Project information -----------------------------------------------------
-distribution = pkg_resources.get_distribution('sensirion_driver_adapters')
+distribution = pkg_resources.get_distribution('circuitpython_sensirion_driver_adapters')
 
 project = distribution.project_name
 copyright = u'{} Sensirion AG, Switzerland'.format(datetime.now().year)

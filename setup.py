@@ -14,7 +14,7 @@ python_requires = '>=3.6, <4'
 
 # Packages that this package imports. List everything apart from standard lib packages.
 install_requires = [
-    'sensirion-i2c-driver',
+    'circuitpython-sensirion-i2c-driver',
     'sensirion-shdlc-driver',
     'sensirion-shdlc-sensorbridge'
 ]
@@ -32,7 +32,7 @@ extras_require = {
     ]
 }
 
-package_name = "sensirion-driver-adapters"
+package_name = "circuitpython-sensirion-driver-adapters"
 author = 'Rolf Laich'
 author_email = 'rolf.laich@sensirion.com'
 description = 'adapter classes to use sensirion_i2c_driver package'
@@ -72,7 +72,7 @@ setup(
     description=description,
     license='BSD 3-Clause License',
     keywords=keywords,
-    url='http://developers.sensirion.com',
+    url='https://github.com/tyeth/circuitpython-sensirion-i2c-adapters',
     packages=find_packages(exclude=['tests', 'tests.*']),
     long_description=long_description,
     python_requires=python_requires,

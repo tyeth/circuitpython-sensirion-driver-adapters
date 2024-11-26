@@ -4,7 +4,7 @@
 import logging
 from typing import Optional
 
-from sensirion_driver_adapters.mocks.response_provider import ResponseProvider, RandomResponse
+from circuitpython_sensirion_driver_adapters.mocks.response_provider import ResponseProvider, RandomResponse
 
 logger = logging.getLogger(__name__)
 
