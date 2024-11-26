@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master  # Replace with your default branch if it's not 'master'
+      - circuitpython
   workflow_dispatch:
     inputs:
       run-environment:
